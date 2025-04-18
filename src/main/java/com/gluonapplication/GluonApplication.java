@@ -18,6 +18,7 @@ public class GluonApplication extends Application {
     public static final String SECONDARY_VIEW = "Secondary View";
 
     private final AppManager appManager = AppManager.initialize(this::postInit);
+    //starts the instance of the mobile app
 
     @Override
     public void init() {
@@ -33,7 +34,7 @@ public class GluonApplication extends Application {
     }
 
     private void postInit(Scene scene) {
-        Swatch.BLUE.assignTo(scene);
+        Swatch.ORANGE.assignTo(scene);
 
         scene.getStylesheets().add(GluonApplication.class.getResource("style.css").toExternalForm());
         ((Stage) scene.getWindow()).getIcons().add(new Image(GluonApplication.class.getResourceAsStream("/icon.png")));
@@ -45,8 +46,13 @@ public class GluonApplication extends Application {
 
     // In your main class
     static {
-        if (Platform.isDesktop()) {
+        if (Platform.isDesktop())
+        {
             System.setProperty("gluonhq.storage", System.getProperty("user.home"));
+
+        } else if (Platform.isAndroid())
+        {
+
         }
     }
 }
