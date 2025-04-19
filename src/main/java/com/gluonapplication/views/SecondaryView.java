@@ -25,7 +25,7 @@ public class SecondaryView extends View {
         setShowTransitionFactory(BounceInRightTransition::new);
         
         FloatingActionButton floatingActionButton = new FloatingActionButton(MaterialDesignIcon.INFO.text,
-                e -> System.out.println("Info"));
+                e -> System.out.println("Info")  );
         floatingActionButton.showOn(this);
     }
 

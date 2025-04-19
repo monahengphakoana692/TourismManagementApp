@@ -9,10 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class PrimaryView extends View {
+public class HomeView extends View {
 
-    public PrimaryView() {
-        
+    public HomeView() {
+
         getStylesheets().add(PrimaryView.class.getResource("primary.css").toExternalForm());
 
         Label label = new Label("Hello JavaFX World!");
@@ -20,10 +20,10 @@ public class PrimaryView extends View {
         Button button = new Button("Change the World!");
         button.setGraphic(new Icon(MaterialDesignIcon.LANGUAGE));
         button.setOnAction(e -> label.setText("Hello JavaFX Universe!"));
-        
+
         VBox controls = new VBox(15.0, label, button);
         controls.setAlignment(Pos.CENTER);
-        
+
         setCenter(controls);
     }
 
@@ -34,5 +34,5 @@ public class PrimaryView extends View {
         appBar.setTitleText("Primary");
         appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e -> System.out.println("Search")));
     }
-    
+
 }

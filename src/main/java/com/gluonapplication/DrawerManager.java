@@ -4,7 +4,6 @@ import com.gluonhq.attach.lifecycle.LifecycleService;
 import com.gluonhq.attach.util.Platform;
 import com.gluonhq.attach.util.Services;
 import com.gluonhq.charm.glisten.application.AppManager;
-import com.gluonhq.charm.glisten.application.ViewStackPolicy;
 import com.gluonhq.charm.glisten.control.Avatar;
 import com.gluonhq.charm.glisten.control.NavigationDrawer;
 import com.gluonhq.charm.glisten.control.NavigationDrawer.Item;
@@ -12,23 +11,28 @@ import com.gluonhq.charm.glisten.control.NavigationDrawer.ViewItem;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
 import javafx.scene.image.Image;
 
-import static com.gluonapplication.GluonApplication.PRIMARY_VIEW;
-import static com.gluonapplication.GluonApplication.SECONDARY_VIEW;
+import static com.gluonapplication.GluonApplication.*;
+import static com.gluonhq.charm.glisten.application.AppManager.HOME_VIEW;
 
 public class DrawerManager {
 
     public static void buildDrawer(AppManager app) {
         NavigationDrawer drawer = app.getDrawer();
-        
-        NavigationDrawer.Header header = new NavigationDrawer.Header("Gluon Application",
-                "Multi View Project",
+
+        NavigationDrawer.Header header = new NavigationDrawer.Header("Lesotho Tour Guide",
+                "Explore the Mountain Kingdom",
                 new Avatar(21, new Image(DrawerManager.class.getResourceAsStream("/icon.png"))));
         drawer.setHeader(header);
-        
-        final Item primaryItem = new ViewItem("Primary", MaterialDesignIcon.HOME.graphic(), PRIMARY_VIEW, ViewStackPolicy.SKIP);
-        final Item secondaryItem = new ViewItem("Secondary", MaterialDesignIcon.DASHBOARD.graphic(), SECONDARY_VIEW);
-        drawer.getItems().addAll(primaryItem, secondaryItem);
-        
+
+
+        final Item homeItem = new ViewItem("Home", MaterialDesignIcon.HOME.graphic(), HOME_VIEW);
+        final Item mapItem = new ViewItem("Map", MaterialDesignIcon.MAP.graphic(), MAP_VIEW);
+        final Item toursItem = new ViewItem("Tours", MaterialDesignIcon.EXPLORE.graphic(), TOURS_VIEW);
+        //final Item quizItem = new ViewItem("Quizzes", MaterialDesignIcon.QUIZ.graphic(), QUIZ_VIEW);
+        final Item settingsItem = new ViewItem("Settings", MaterialDesignIcon.SETTINGS.graphic(), SETTINGS_VIEW);
+
+        drawer.getItems().addAll(homeItem, mapItem, toursItem, settingsItem);
+
         if (Platform.isDesktop()) {
             final Item quitItem = new Item("Quit", MaterialDesignIcon.EXIT_TO_APP.graphic());
             quitItem.selectedProperty().addListener((obs, ov, nv) -> {
