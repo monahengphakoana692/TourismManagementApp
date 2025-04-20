@@ -31,7 +31,7 @@ public class HomeView extends View {
     protected void updateAppBar(AppBar appBar)
     {
         appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
-        appBar.setTitleText("Primary");
+        appBar.setTitleText("Home");
         appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e -> System.out.println("Search")));
     }
 
