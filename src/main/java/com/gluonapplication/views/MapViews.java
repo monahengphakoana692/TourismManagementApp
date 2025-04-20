@@ -67,7 +67,7 @@ public class MapViews extends View {
         hotspots.add(new Hotspot("2", "Maletsunyane Falls",
                 "Highest single-drop waterfall in Southern Africa",
                 new MapPoint(-29.986, 28.987),
-                "/icon.png",
+                "/MaleFalls.jpeg",
                 "/Falls.mp3",
                 "/FallVideo.mp4"));
     }
@@ -260,6 +260,7 @@ public class MapViews extends View {
     protected void updateAppBar(AppBar appBar) {
         appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
         appBar.setTitleText("Lesotho Tour Guide");
+        appBar.getActionItems().add(MaterialDesignIcon.EXPLORE.button(e -> System.out.println("Explore")));
 
 
     }

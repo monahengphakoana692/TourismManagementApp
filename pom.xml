@@ -166,7 +166,7 @@
                         <list>com.gluonapplication</list>
                     </bundlesList>
                     <reflectionList>
-                        <list>com.gluonapplication.views.PrimaryView</list>
+                        <list>com.gluonapplication.views.HomeView</list>
                         <list>com.gluonapplication.views.SecondaryView</list>
                     </reflectionList>
                 </configuration>
