@@ -29,24 +29,24 @@ public class FullImageView extends View {
         // Create full-size image view
         MultiMediaView fullMediaView = new MultiMediaView();
         fullMediaView.setImageUrl(imageUrl);
-        fullMediaView.getImageView().setFitWidth(800); // Large size for full view
-        fullMediaView.getImageView().setPreserveRatio(true);
+        fullMediaView.getImageView().setFitWidth(300); // Large size for full view
+        fullMediaView.getImageView().setFitHeight(300);
         fullMediaView.getImageView().setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);");
 
         // Create title label
         Label fullTitle = new Label(title);
-        fullTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        fullTitle.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
         fullTitle.setStyle("-fx-text-fill: #333;");
 
-        root.getChildren().addAll(fullTitle, fullMediaView.getImageView());
+        root.getChildren().addAll(fullMediaView.getImageView(),fullTitle);
         setCenter(root);
     }
 
     @Override
     protected void updateAppBar(AppBar appBar) {
-        /*appBar.setNavIcon(MaterialDesignIcon.ARROW_BACK.button(e ->
-                //getAppManager().goBack()
-        ));*/
-        appBar.setTitleText("IMAGE DETAIL");
+        appBar.setNavIcon(MaterialDesignIcon.ARROW_BACK.button(e ->
+                getAppManager().goHome()
+        ));
+        appBar.setTitleText("Tour details");
     }
 }

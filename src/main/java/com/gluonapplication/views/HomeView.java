@@ -66,7 +66,7 @@ public class HomeView extends View
         HBox row3 = new HBox(20);
         row3.setAlignment(Pos.CENTER);
 
-        VBox column3 = createImageCard("The falling river", "/MaleFalls.jpeg");
+        VBox column3 = createImageCard("The falling river now", "/MaleFalls.jpeg");
         column3.setId(imageHolderID);
         row2.getChildren().addAll(column3);
 
@@ -100,7 +100,6 @@ public class HomeView extends View
         MultiMediaView mediaView = new MultiMediaView();
         mediaView.setImageUrl(imageUrl);
         mediaView.getImageView().setFitWidth(240);
-        //mediaView.getImageView().setPreserveRatio(true);
         mediaView.getImageView().setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);");
 
         Label label = new Label(title);
@@ -108,6 +107,10 @@ public class HomeView extends View
         label.setTextFill(Color.BLACK);
 
         card.getChildren().addAll(mediaView.getImageView(), label);
+
+        // Add click handler to show full view
+        card.setOnMouseClicked(e -> showFullView(title, imageUrl));
+
         return card;
     }
 
@@ -117,4 +120,35 @@ public class HomeView extends View
         appBar.setTitleText("HOME");
         appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e -> System.out.println("Search")));
     }
+
+    private void showFullView(String title, String imageUrl) {
+        // Create and show the full image view
+        FullImageView fullImageView = new FullImageView(TourDescriptor(title), imageUrl);
+        getAppManager().addViewFactory(title.replaceAll("\\s+", ""), () -> fullImageView);
+        getAppManager().switchView(title.replaceAll("\\s+", ""));
+    }
+
+    private String TourDescriptor(String title)
+    {
+        String[] details = {
+                "this is the one time description and \n we are going to make it in like thank you so much!",
+                "this is the for life coding , when you are \n acquire skills like nobody s business",
+                "My third guy is holding on like no one has \n ever got it before, so thank you "
+        };
+        String specifics = null;
+
+        if(title.equals("The  Fall that was not caught"))
+        {
+            specifics = details[0];
+        }else if(title.equals("The falling river now"))
+        {
+            specifics = details[1];
+        }else if(title.equals("The falling river"))
+        {
+            specifics = details[2];
+        }
+
+        return specifics;
+    }
+
 }
