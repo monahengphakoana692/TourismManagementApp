@@ -22,6 +22,15 @@
         <android.targetSdk>34</android.targetSdk>
         <android.compileSdk>34</android.compileSdk>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.gluonhq.attach</groupId>
+                <artifactId>storage</artifactId>
+                <version>4.0.22</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- JavaFX -->
@@ -148,6 +157,7 @@
                     <mainClass>${mainClassName}</mainClass>
                 </configuration>
             </plugin>
+
 
             <plugin>
                 <groupId>com.gluonhq</groupId>

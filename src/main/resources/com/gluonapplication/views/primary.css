@@ -2,7 +2,7 @@
     -fx-background-color: white;
 }
 
-.title {
+#title {
     -fx-font-family: "Georgia";
     -fx-font-size: 36px;
     -fx-font-weight: bold;
@@ -16,7 +16,7 @@
     -fx-text-fill: #555555;
 }
 
-.image-card {
+#image-card {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1;
