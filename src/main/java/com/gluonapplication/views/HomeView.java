@@ -134,6 +134,7 @@ public class HomeView extends View
                 "this is the one time description and \n we are going to make it in like thank you so much!",
                 "this is the for life coding , when you are \n acquire skills like nobody s business",
                 "My third guy is holding on like no one has \n ever got it before, so thank you "
+
         };
         String specifics = null;
 
