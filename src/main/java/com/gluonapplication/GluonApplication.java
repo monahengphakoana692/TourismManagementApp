@@ -38,7 +38,7 @@ public class GluonApplication extends Application {
     }
 
     private void postInit(Scene scene) {
-        Swatch.BLUE.assignTo(scene); // Changed to blue for a travel app feel
+        Swatch.LIME.assignTo(scene); // Changed to blue for a travel app feel
         scene.getStylesheets().add(GluonApplication.class.getResource("style.css").toExternalForm());
         ((Stage) scene.getWindow()).getIcons().add(new Image(GluonApplication.class.getResourceAsStream("/icon.png")));
     }

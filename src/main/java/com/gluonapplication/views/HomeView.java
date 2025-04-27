@@ -4,22 +4,48 @@ import com.gluonapplication.MultiMediaView;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.mvc.View;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+//import static jdk.internal.org.jline.terminal.Terminal.MouseTracking.Button;
+
 public class HomeView extends View
 {
     private String imageHolderID = "imageHolders";
+    TextField searchBar = new TextField();
+    String searcedWord = null;
+    boolean isSearch = false;
+    String imageUrl = null;
 
     public HomeView()
     {
+        {
+            try {
+                searchBar.setPromptText("search");
+                searchBar.setStyle("-fx-background-color:white; -fx-border-radius:20px; -fx-border-width:2px;");
+                searchBar.setOnKeyPressed(keyEvent -> {
+
+                    searcedWord = searchBar.getText();
+
+                    showFullView(TourDescriptor(searcedWord), imageUrl);
+                });
+            } catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
 
         getStylesheets().add(HomeView.class.getResource("primary.css").toExternalForm());
 
@@ -39,8 +65,6 @@ public class HomeView extends View
 
         Label title = new Label("Tour Lesotho");
         title.setId("title");
-        //title.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
-        //title.setTextFill(Color.BLACK);
 
         Label subtitle = new Label("Venice: Life On The Edge");
         subtitle.setFont(Font.font("Georgia", FontPosture.ITALIC, 24));
@@ -91,6 +115,7 @@ public class HomeView extends View
     }
 
     private VBox createImageCard(String title, String imageUrl) {
+        this.imageUrl = imageUrl;
         VBox card = new VBox(10);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(15));
@@ -115,10 +140,45 @@ public class HomeView extends View
     }
 
     @Override
-    protected void updateAppBar(AppBar appBar) {
-        appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
+    protected void updateAppBar(AppBar appBar)
+    {
+
+        appBar.setNavIcon(MaterialDesignIcon.MENU.button(e ->
+                {
+                        getAppManager().getDrawer().open();
+                  if(isSearch==true)
+                  {
+                      appBar.getActionItems().clear();
+                      appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(new EventHandler<ActionEvent>() {
+                          @Override
+                          public void handle(ActionEvent e) {
+                          }
+                      }));
+
+                      isSearch=false;
+                  }
+
+                }
+        ));
         appBar.setTitleText("HOME");
-        appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e -> System.out.println("Search")));
+        appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e ->
+                {
+                    appBar.getActionItems().clear();
+                    appBar.setNavIcon(MaterialDesignIcon.MENU.button(new EventHandler<ActionEvent>()
+                         {
+                             @Override
+                             public void handle(ActionEvent e) {
+                                 HomeView.this.getAppManager().getDrawer().open();
+                             }
+                         }
+                    ));
+                    appBar.setTitleText("HOME");
+                appBar.getActionItems().add(searchBar);
+                    isSearch = true;
+                }
+
+
+        ));
     }
 
     private void showFullView(String title, String imageUrl) {
@@ -141,12 +201,16 @@ public class HomeView extends View
         if(title.equals("The  Fall that was not caught"))
         {
             specifics = details[0];
+            this.imageUrl = "/MaleFalls.jpeg";
+
         }else if(title.equals("The falling river now"))
         {
             specifics = details[1];
         }else if(title.equals("The falling river"))
         {
             specifics = details[2];
+        }else if(title.equals("Quiz")){
+            System.out.println("Quiz");
         }
 
         return specifics;
