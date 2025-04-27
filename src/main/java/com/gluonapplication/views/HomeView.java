@@ -13,6 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -27,6 +30,7 @@ public class HomeView extends View
     String searcedWord = null;
     boolean isSearch = false;
     String imageUrl = null;
+    String videoUrl = null;
 
     public HomeView()
     {
@@ -38,7 +42,7 @@ public class HomeView extends View
 
                     searcedWord = searchBar.getText();
 
-                    showFullView(TourDescriptor(searcedWord), imageUrl);
+                    showFullView(TourDescriptor(searcedWord));
                 });
             } catch (Exception e)
             {
@@ -134,7 +138,44 @@ public class HomeView extends View
         card.getChildren().addAll(mediaView.getImageView(), label);
 
         // Add click handler to show full view
-        card.setOnMouseClicked(e -> showFullView(title, imageUrl));
+        card.setOnMouseClicked(e -> showFullView(title));
+
+        return card;
+    }
+    private VBox createVideoCard(String title, String videoUrl) {
+        this.videoUrl = videoUrl;
+        VBox card = new VBox(10);
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(15));
+        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1;");
+        card.setId("video-card");
+
+        MultiMediaView mediaView = new MultiMediaView();
+        mediaView.setVideoUrl(videoUrl);
+
+        // Set up media player and view
+        MediaPlayer player = new MediaPlayer(new Media(videoUrl));
+        MediaView spotMedeia = new MediaView(player);
+        spotMedeia.setFitWidth(240);
+        spotMedeia.setPreserveRatio(true);
+        spotMedeia.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);");
+
+        // Add play button overlay
+        Button playButton = new Button("▶");
+        playButton.setStyle("-fx-background-radius: 30; -fx-font-size: 14; -fx-background-color: rgba(0,0,0,0.7); -fx-text-fill: white;");
+        playButton.setOnAction(e -> player.play());
+
+        StackPane mediaContainer = new StackPane(spotMedeia, playButton);
+        StackPane.setAlignment(playButton, Pos.CENTER);
+
+        Label label = new Label(title);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        label.setTextFill(Color.BLACK);
+
+        card.getChildren().addAll(mediaContainer, label);
+
+        // Add click handler to show full view
+        card.setOnMouseClicked(e -> showFullView(title));
 
         return card;
     }
@@ -181,19 +222,24 @@ public class HomeView extends View
         ));
     }
 
-    private void showFullView(String title, String imageUrl) {
-        // Create and show the full image view
-        FullImageView fullImageView = new FullImageView(TourDescriptor(title), imageUrl);
-        getAppManager().addViewFactory(title.replaceAll("\\s+", ""), () -> fullImageView);
+    private void showFullView(String title) {
+        // Get the tour details first to set the video URL
+        String description = TourDescriptor(title);
+
+        // Create and show the full video view
+        FullVideoView fullVideoView = new FullVideoView(description);
+        fullVideoView.setVideoUrl(videoUrl); // This sets the video and starts playback
+
+        getAppManager().addViewFactory(title.replaceAll("\\s+", ""), () -> fullVideoView);
         getAppManager().switchView(title.replaceAll("\\s+", ""));
     }
 
     private String TourDescriptor(String title)
     {
         String[] details = {
-                "this is the one time description and \n we are going to make it in like thank you so much!",
-                "this is the for life coding , when you are \n acquire skills like nobody s business",
-                "My third guy is holding on like no one has \n ever got it before, so thank you "
+                "this is the one time description and \n we are going to make it \n in like thank you so much!",
+                "this is the for life coding , when you are \n acquire skills \n like nobody s business",
+                "My third guy is holding on like no one has \n ever got it before \n, so thank you "
 
         };
         String specifics = null;
@@ -201,14 +247,16 @@ public class HomeView extends View
         if(title.equals("The  Fall that was not caught"))
         {
             specifics = details[0];
-            this.imageUrl = "/MaleFalls.jpeg";
+            this.videoUrl = "/FallVideo.mp4";
 
         }else if(title.equals("The falling river now"))
         {
             specifics = details[1];
+            this.imageUrl = "/MaleFalls.jpeg";
         }else if(title.equals("The falling river"))
         {
             specifics = details[2];
+            this.imageUrl = "/MaleFalls.jpeg";
         }else if(title.equals("Quiz")){
             System.out.println("Quiz");
         }
