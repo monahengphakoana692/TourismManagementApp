@@ -17,6 +17,11 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="Gluon" />
+      <option name="name" value="Gluon" />
+      <option name="url" value="https://nexus.gluonhq.com/nexus/content/repositories/releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
@@ -25,6 +30,21 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Gluon-JavaFX-Android" />
+      <option name="name" value="Gluon-JavaFX-Android" />
+      <option name="url" value="https://nexus.gluonhq.com/nexus/content/groups/public-javafx/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Gluon-Android" />
+      <option name="name" value="Gluon-Android" />
+      <option name="url" value="https://nexus.gluonhq.com/nexus/content/repositories/public-javafx-android" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Gluon-Android" />
+      <option name="name" value="Gluon-Android" />
+      <option name="url" value="https://nexus.gluonhq.com/nexus/content/repositories/public-javafx-android/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="Gluon" />

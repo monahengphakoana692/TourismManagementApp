@@ -15,6 +15,8 @@ RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.
 ENV GRAALVM_HOME=/usr/lib/graalvm
 ENV PATH=$GRAALVM_HOME/bin:$PATH
 
+# Create Gluon home directory (critical for builds)
+RUN mkdir -p /home/gluon && chmod 777 /home/gluon
 
 # Install Android SDK
 RUN mkdir -p /opt/android-sdk && \
@@ -28,6 +30,7 @@ RUN mkdir -p /opt/android-sdk && \
 
 # Set Android environment variables
 ENV ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
 ENV PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
 # Accept Android licenses
@@ -36,7 +39,10 @@ RUN yes | sdkmanager --licenses
 # Install Android tools
 RUN sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0" "ndk;25.2.9519653"
 
-# Set working directory (your project will be mounted here)
+# Create symlink for Gluon's expected NDK path (critical fix)
+RUN ln -s /opt/android-sdk/ndk/25.2.9519653 /home/gluon/android-ndk
+
+# Set working directory
 WORKDIR /app
 
 # Install Maven

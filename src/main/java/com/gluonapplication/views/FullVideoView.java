@@ -106,7 +106,8 @@ public class FullVideoView extends View {
     }
 
     @Override
-    protected void updateAppBar(AppBar appBar) {
+    protected void updateAppBar(AppBar appBar)
+    {
         appBar.setNavIcon(MaterialDesignIcon.ARROW_BACK.button(e -> {
             // Clean up media player when going back
             if (mediaPlayer != null) {
