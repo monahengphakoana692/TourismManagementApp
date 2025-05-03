@@ -83,7 +83,7 @@ public class HomeView extends View
         HBox row1 = new HBox(20);
         row1.setAlignment(Pos.CENTER);
 
-        VBox column1 = createImageCard("The  Fall that was not caught", "/MaleFalls.jpeg");
+        VBox column1 = createImageCard("The Maletsunyane Water Fall", "/MaleFalls.jpeg");
         column1.setId(imageHolderID);
         row1.getChildren().addAll(column1);
 
@@ -94,11 +94,11 @@ public class HomeView extends View
         HBox row3 = new HBox(20);
         row3.setAlignment(Pos.CENTER);
 
-        VBox column3 = createImageCard("The falling river now", "/MaleFalls.jpeg");
+        VBox column3 = createImageCard("AVANI Maseru Hotel", "/Avani.jpeg");
         column3.setId(imageHolderID);
         row2.getChildren().addAll(column3);
 
-        VBox column4 = createImageCard("The falling river", "/MaleFalls.jpeg");
+        VBox column4 = createImageCard("The Katse Dam Lesotho", "/katse.png");
         column4.setId(imageHolderID);
         row3.getChildren().addAll(column4);
 
@@ -238,25 +238,27 @@ public class HomeView extends View
     {
         String[] details = {
                 "this is the one time description and \n we are going to make it \n in like thank you so much!",
-                "this is the for life coding , when you are \n acquire skills \n like nobody s business",
-                "My third guy is holding on like no one has \n ever got it before \n, so thank you "
+                "Avani Lesotho Hotel & Casino is a \n luxurious hilltop hotel in Maseru,\n Lesotho, known for its \n stunning panoramic \n views of the city \nand surrounding mountains",
+                "The dam was completed in 1996 \n and is the second-largest \n double-curvature \n arch dam in Africa, rising about \n 185 meters high and stretching \n across the Malibamat’so River "
 
         };
         String specifics = null;
 
-        if(title.equals("The  Fall that was not caught"))
+        if(title.equals("The Maletsunyane Water Fall"))
         {
             specifics = details[0];
             this.videoUrl = "/FallVideo.mp4";
 
-        }else if(title.equals("The falling river now"))
+        }else if(title.equals("AVANI Maseru Hotel"))
         {
             specifics = details[1];
-            this.imageUrl = "/MaleFalls.jpeg";
-        }else if(title.equals("The falling river"))
+            this.videoUrl = "/Avanii.mp4";
+
+        }else if(title.equals("The Katse Dam Lesotho"))
         {
             specifics = details[2];
-            this.imageUrl = "/MaleFalls.jpeg";
+            this.videoUrl = "/katse.mp4";
+
         }else if(title.equals("Quiz")){
             System.out.println("Quiz");
         }
