@@ -7,6 +7,7 @@ import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 public class QuizView extends View {
@@ -34,6 +35,7 @@ public class QuizView extends View {
         VBox layout = new VBox(10, questionLabel, answerButtons[0], answerButtons[1],
                 answerButtons[2], answerButtons[3], progress, scoreLabel);
         layout.setAlignment(Pos.CENTER);
+        layout.setPrefHeight(400);
 
         setCenter(layout);
         showQuestion(0);
@@ -43,6 +45,7 @@ public class QuizView extends View {
         if (index < questions.length) {
             currentQuestion = index;
             ((Label) ((VBox) getCenter()).getChildren().get(0)).setText(questions[index][0]);
+            setHeight(300);
             for (int i = 0; i < 4; i++) {
                 ((Button) ((VBox) getCenter()).getChildren().get(i + 1)).setText(questions[index][i + 1]);
             }

@@ -5,12 +5,10 @@ import com.gluonapplication.MultiMediaView;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.mvc.View;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
-import com.gluonhq.charm.glisten.visual.Swatch;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -24,9 +22,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-import static com.gluonapplication.views.ViewManager.registeredViews;
-
-//import static jdk.internal.org.jline.terminal.Terminal.MouseTracking.Button;
 
 public class HomeView extends View
 {
@@ -129,7 +124,7 @@ public class HomeView extends View
         VBox card = new VBox(10);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(15));
-        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1;");
+        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-cursor:hand;");
         card.setId("image-card");
 
         MultiMediaView mediaView = new MultiMediaView();
@@ -254,7 +249,7 @@ public class HomeView extends View
     private String TourDescriptor(String title)
     {
         String[] details = {
-                "this is the one time description and \n we are going to make it \n in like thank you so much!",
+                "Maletsunyane Falls is a 192-metre-high \n (630 ft) waterfall in the \n Southern African country Lesotho",
                 "Avani Lesotho Hotel & Casino is a \n luxurious hilltop hotel in Maseru,\n Lesotho, known for its \n stunning panoramic \n views of the city \nand surrounding mountains",
                 "The dam was completed in 1996 \n and is the second-largest \n double-curvature \n arch dam in Africa, rising about \n 185 meters high and stretching \n across the Malibamat’so River "
 
