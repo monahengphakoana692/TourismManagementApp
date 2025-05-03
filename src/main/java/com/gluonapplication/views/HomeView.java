@@ -1,13 +1,16 @@
 package com.gluonapplication.views;
 
+import com.gluonapplication.GluonApplication;
 import com.gluonapplication.MultiMediaView;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.mvc.View;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
+import com.gluonhq.charm.glisten.visual.Swatch;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -21,6 +24,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+import static com.gluonapplication.views.ViewManager.registeredViews;
+
 //import static jdk.internal.org.jline.terminal.Terminal.MouseTracking.Button;
 
 public class HomeView extends View
@@ -31,6 +36,7 @@ public class HomeView extends View
     boolean isSearch = false;
     String imageUrl = null;
     String videoUrl = null;
+
 
     public HomeView()
     {
@@ -223,15 +229,26 @@ public class HomeView extends View
     }
 
     private void showFullView(String title) {
-        // Get the tour details first to set the video URL
-        String description = TourDescriptor(title);
+        try {
+            String description = TourDescriptor(title);
+            String viewName = "FULL_VIEW_" + title.replaceAll("\\s+", "");
 
-        // Create and show the full video view
-        FullVideoView fullVideoView = new FullVideoView(description);
-        fullVideoView.setVideoUrl(videoUrl); // This sets the video and starts playback
+            // Register the view if not already registered
+            if (!ViewManager.registeredViews.containsKey(viewName)) {
+                ViewManager.registerView(viewName, () -> {
+                    FullVideoView view = new FullVideoView(description);
+                    view.setVideoUrl(videoUrl);
+                    return view;
+                });
+            }
 
-        getAppManager().addViewFactory(title.replaceAll("\\s+", ""), () -> fullVideoView);
-        getAppManager().switchView(title.replaceAll("\\s+", ""));
+            // Switch to the view
+            ViewManager.switchToView(viewName);
+        } catch (Exception e) {
+            System.err.println("Error showing full view: " + e.getMessage());
+            // Fallback to home view
+            getAppManager().switchView(GluonApplication.PRIMARY_VIEW);
+        }
     }
 
     private String TourDescriptor(String title)
