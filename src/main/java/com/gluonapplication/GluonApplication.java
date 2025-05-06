@@ -2,6 +2,7 @@ package com.gluonapplication;
 
 import com.gluonapplication.views.*;
 import com.gluonhq.charm.glisten.application.AppManager;
+import com.gluonhq.charm.glisten.application.MobileApplication;
 import com.gluonhq.charm.glisten.visual.Swatch;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -23,9 +24,12 @@ public class GluonApplication extends Application {
     @Override
     public void init()
     {
+        System.out.println("Checking DLL load...");
+        System.load("C:\\arcgis-runtime-sdk-java-100.15.0\\jniLibs\\WIN64\\runtimecore.dll");
+        System.out.println("DLL loaded successfully!");
         appManager.addViewFactory(PRIMARY_VIEW, HomeView::new);
         appManager.addViewFactory(MAP_VIEW, MapViews::new);
-        //appManager.addViewFactory(TOURS_VIEW, ToursView::new);
+        appManager.addViewFactory(TOURS_VIEW, WebViewTry::new);
         appManager.addViewFactory(QUIZ_VIEW, QuizView::new);
         //appManager.addViewFactory(SETTINGS_VIEW, SettingsView::new);
 

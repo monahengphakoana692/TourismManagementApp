@@ -28,10 +28,10 @@ public class DrawerManager {
         final Item homeItem = new ViewItem("Home", MaterialDesignIcon.HOME.graphic(), HOME_VIEW);
         final Item mapItem = new ViewItem("Map", MaterialDesignIcon.MAP.graphic(), MAP_VIEW);
         final Item toursItem = new ViewItem("Trivia/Quiz", MaterialDesignIcon.ASSESSMENT.graphic(), QUIZ_VIEW);
-        //final Item quizItem = new ViewItem("Quizzes", MaterialDesignIcon.QUIZ.graphic(), QUIZ_VIEW);
+        final Item quizItem = new ViewItem("Quizzes", MaterialDesignIcon.MAP.graphic(), TOURS_VIEW);
         final Item settingsItem = new ViewItem("Settings", MaterialDesignIcon.SETTINGS.graphic(), SETTINGS_VIEW);
 
-        drawer.getItems().addAll(homeItem, mapItem, toursItem, settingsItem);
+        drawer.getItems().addAll(homeItem, mapItem,quizItem, toursItem, settingsItem);
 
         if (Platform.isDesktop()) {
             final Item quitItem = new Item("Quit", MaterialDesignIcon.EXIT_TO_APP.graphic());
