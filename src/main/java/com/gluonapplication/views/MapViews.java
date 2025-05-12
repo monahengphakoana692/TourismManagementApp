@@ -51,7 +51,7 @@ public class MapViews extends View {
 
     private void initializeMap() {
         mapView.setCenter(new MapPoint(-29.3167, 27.4833)); // Maseru
-        mapView.setZoom(12);
+        mapView.setZoom(16);
     }
 
     private void loadHotspots() {
@@ -69,7 +69,7 @@ public class MapViews extends View {
                 "/Falls.mp3",
                 "/FallVideo.mp4"));
 
-        hotspots.add(new Hotspot("2", "Katse Dam",
+        hotspots.add(new Hotspot("3", "Katse Dam",
                 "Water facility in lesotho",
                 new MapPoint(-29.986, 28.987),
                 "/katse.png",
@@ -145,23 +145,54 @@ public class MapViews extends View {
     }
 
     private Node createMarker(Hotspot hotspot) {
+        // Create a stack pane to hold both image and label
+        StackPane markerPane = new StackPane();
+
         try {
             URL imageUrl = getClass().getResource(hotspot.getImagePath());
             if (imageUrl != null) {
                 ImageView marker = new ImageView(new Image(imageUrl.toExternalForm()));
                 marker.setFitWidth(30);
                 marker.setFitHeight(30);
-                Tooltip.install(marker, new Tooltip(hotspot.getTitle()));
-                return marker;
+
+                // Create label for the name
+                Label nameLabel = new Label(hotspot.getTitle());
+                nameLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-background-color: rgba(255,255,255,0.7);");
+                nameLabel.setTranslateY(20); // Position below the icon
+
+                markerPane.getChildren().addAll(marker, nameLabel);
+                Tooltip.install(markerPane, new Tooltip(hotspot.getTitle()));
+                return markerPane;
             }
         } catch (Exception e) {
             System.err.println("Error loading marker image: " + e.getMessage());
         }
 
-        // Fallback marker
+        // Fallback marker with name
         Circle circle = new Circle(15, Color.RED);
-        Tooltip.install(circle, new Tooltip(hotspot.getTitle()));
-        return circle;
+        Label nameLabel = new Label(hotspot.getTitle());
+        nameLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+        nameLabel.setTranslateY(20);
+
+        markerPane.getChildren().addAll(circle, nameLabel);
+        Tooltip.install(markerPane, new Tooltip(hotspot.getTitle()));
+        return markerPane;
+    }
+
+    private VBox createTooltipContent(Hotspot hotspot) {
+        VBox tooltipContent = new VBox(5);
+        tooltipContent.setPadding(new Insets(5));
+
+        Label titleLabel = new Label(hotspot.getTitle());
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label descLabel = new Label(hotspot.getDescription());
+        descLabel.setStyle("-fx-font-size: 12px;");
+        descLabel.setWrapText(true);
+        descLabel.setMaxWidth(200);
+
+        tooltipContent.getChildren().addAll(titleLabel, descLabel);
+        return tooltipContent;
     }
 
     private void showHotspotContent(Hotspot hotspot) {
