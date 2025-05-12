@@ -1,4 +1,3 @@
-
 package com.gluonapplication.views;
 
 import com.gluonhq.charm.glisten.control.AppBar;
@@ -22,7 +21,7 @@ public class WebViews extends View {
         webView = new WebView();
         webView.setPrefSize(800, 600);
 
-        // Create Lesotho landmarks with absolute paths
+        // Create Lesotho landmarks with multimedia
         List<Landmark> landmarks = new ArrayList<>();
         landmarks.add(new Landmark(
                 "Avani Lesotho Hotel",
@@ -32,7 +31,8 @@ public class WebViews extends View {
                 getClass().getResource("/Avanini.mp3").toExternalForm(),
                 getClass().getResource("/Avani.jpeg").toExternalForm(),
                 "#3498db",
-                "Maseru, Lesotho"  // Added location info
+                "Maseru, Lesotho",
+                "https://www.youtube.com/embed/avani_hotel_video"  // Video URL
         ));
         landmarks.add(new Landmark(
                 "Maletsunyane Falls",
@@ -42,7 +42,8 @@ public class WebViews extends View {
                 getClass().getResource("/Falls.mp3").toExternalForm(),
                 getClass().getResource("/maleFalls.jpeg").toExternalForm(),
                 "#2ecc71",
-                "Semonkong, Lesotho"
+                "Semonkong, Lesotho",
+                "https://www.youtube.com/embed/maletsunyane_falls_video"
         ));
         landmarks.add(new Landmark(
                 "Katse Dam",
@@ -52,7 +53,8 @@ public class WebViews extends View {
                 getClass().getResource("/Falls.mp3").toExternalForm(),
                 getClass().getResource("/katse.png").toExternalForm(),
                 "#e74c3c",
-                "Katse, Lesotho"
+                "Katse, Lesotho",
+                "https://www.youtube.com/embed/katse_dam_video"
         ));
 
         loadLeafletMap(landmarks);
@@ -94,7 +96,8 @@ public class WebViews extends View {
                             "\"audio\":\"%s\"," +
                             "\"image\":\"%s\"," +
                             "\"color\":\"%s\"," +
-                            "\"location\":\"%s\"" +
+                            "\"location\":\"%s\"," +
+                            "\"video\":\"%s\"" +
                             "},",
                     landmark.getName(),
                     landmark.getLatitude(),
@@ -103,7 +106,8 @@ public class WebViews extends View {
                     landmark.getAudio(),
                     landmark.getImage(),
                     landmark.getColor(),
-                    landmark.getLocation()
+                    landmark.getLocation(),
+                    landmark.getVideo()
             ));
         }
         if (!landmarks.isEmpty()) {
@@ -122,9 +126,11 @@ public class WebViews extends View {
         private final String image;
         private final String color;
         private final String location;
+        private final String video;
 
         public Landmark(String name, double latitude, double longitude,
-                        String type, String audio, String image, String color, String location) {
+                        String type, String audio, String image, String color,
+                        String location, String video) {
             this.name = name;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -133,8 +139,10 @@ public class WebViews extends View {
             this.image = image;
             this.color = color;
             this.location = location;
+            this.video = video;
         }
 
+        // Getters
         public String getName() { return name; }
         public double getLatitude() { return latitude; }
         public double getLongitude() { return longitude; }
@@ -144,7 +152,7 @@ public class WebViews extends View {
         public String getColor() { return color; }
 
         public String getLocation() { return location; }
-
+        public String getVideo() { return video; }
     }
 
     @Override
@@ -152,7 +160,5 @@ public class WebViews extends View {
         appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
         appBar.setTitleText("Lesotho Tour Guide");
         appBar.getActionItems().add(MaterialDesignIcon.EXPLORE.button(e -> System.out.println("Explore")));
-
-
     }
 }

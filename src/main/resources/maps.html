@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Lesotho Landmarks Map</title>
+    <title>Lesotho Tour Guide</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Leaflet CSS -->
@@ -10,7 +10,7 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
 
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -19,16 +19,14 @@
             width: 100%;
             z-index: 1;
         }
-        .leaflet-popup {
-            z-index: 1000;
-        }
         .custom-popup {
-            min-width: 250px;
+            min-width: 280px;
+            max-width: 300px;
         }
         .custom-popup h3 {
             margin: 0 0 5px 0;
             color: #2c3e50;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
         .custom-popup .location {
             color: #7f8c8d;
@@ -39,25 +37,50 @@
             width: 100%;
             height: auto;
             margin: 5px 0;
-            border-radius: 3px;
+            border-radius: 4px;
         }
-        .audio-control {
+        .media-control {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .media-btn {
             display: flex;
             align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .media-btn:hover {
+            background: #e9ecef;
+        }
+        .media-btn i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+        .media-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        .media-btn.active i {
+            color: white;
+        }
+        .video-container {
+            display: none;
             margin-top: 10px;
         }
-        .audio-control button {
-            background: #3498db;
+        .video-container iframe {
+            width: 100%;
+            height: 180px;
             border: none;
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-            cursor: pointer;
+            border-radius: 4px;
         }
-        .leaflet-marker-icon {
-            z-index: 10;
+        .leaflet-popup-content-wrapper {
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -71,16 +94,44 @@
 <script>
     /*LANDMARKS_PLACEHOLDER*/
 
-    // Initialize map
+    // Global media control variables
+    let currentAudio = null;
+    let currentVideoContainer = null;
+    let currentMediaBtn = null;
+
+    // Function to stop all playing media
+    function stopAllMedia() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            if (currentMediaBtn) {
+                currentMediaBtn.classList.remove('active');
+                currentMediaBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+            }
+        }
+        if (currentVideoContainer) {
+            currentVideoContainer.style.display = 'none';
+            currentVideoContainer.innerHTML = '';
+            if (currentMediaBtn) {
+                currentMediaBtn.classList.remove('active');
+                currentMediaBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
+            }
+        }
+        currentAudio = null;
+        currentVideoContainer = null;
+        currentMediaBtn = null;
+    }
+
+    // Initialize map centered on Lesotho
     var map = L.map('map').setView([-29.6, 28.2], 8);
 
-    // Add tiles
+    // Add OpenStreetMap tiles
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Function to create custom icon
+    // Create custom icon
     function createCustomIcon(color) {
         return L.divIcon({
             className: 'custom-marker',
@@ -91,7 +142,7 @@
         });
     }
 
-    // Add markers
+    // Add markers with multimedia options
     landmarks.forEach(function(landmark) {
         var marker = L.marker([landmark.lat, landmark.lng], {
             icon: createCustomIcon(landmark.color),
@@ -100,32 +151,120 @@
         }).addTo(map);
 
         // Create popup content
-        var popupContent = `<div class="custom-popup">
-            <h3>${landmark.name}</h3>
-            <div class="location">${landmark.location}</div>`;
+        var popupContent = document.createElement('div');
+        popupContent.className = 'custom-popup';
 
+        // Add title
+        var title = document.createElement('h3');
+        title.textContent = landmark.name;
+        popupContent.appendChild(title);
+
+        // Add location
+        var location = document.createElement('div');
+        location.className = 'location';
+        location.textContent = landmark.location;
+        popupContent.appendChild(location);
+
+        // Add image if available
         if (landmark.image) {
-            popupContent += `<img src="${landmark.image}" alt="${landmark.name}">`;
+            var img = document.createElement('img');
+            img.src = landmark.image;
+            img.alt = landmark.name;
+            popupContent.appendChild(img);
         }
 
+        // Create media controls container
+        var mediaControls = document.createElement('div');
+        mediaControls.className = 'media-control';
+
+        // Add audio player if available
         if (landmark.audio) {
-            popupContent += `
-            <div class="audio-control">
-                <button onclick="document.getElementById('audio-${landmark.name.replace(/\s+/g, '-')}').play()">
-                    <i class="fas fa-play"></i>
-                </button>
-                <audio id="audio-${landmark.name.replace(/\s+/g, '-')}" src="${landmark.audio}"></audio>
-                <span>Play description</span>
-            </div>`;
+            var audioBtn = document.createElement('div');
+            audioBtn.className = 'media-btn';
+            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+
+            var audioPlayer = document.createElement('audio');
+            audioPlayer.src = landmark.audio;
+
+            audioBtn.addEventListener('click', function() {
+                // Stop any currently playing media
+                stopAllMedia();
+
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    audioBtn.classList.add('active');
+                    audioBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Audio';
+                    currentAudio = audioPlayer;
+                    currentMediaBtn = audioBtn;
+                } else {
+                    audioPlayer.pause();
+                    audioBtn.classList.remove('active');
+                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+                    currentAudio = null;
+                    currentMediaBtn = null;
+                }
+            });
+
+            // Handle when audio ends naturally
+            audioPlayer.addEventListener('ended', function() {
+                audioBtn.classList.remove('active');
+                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+                currentAudio = null;
+                currentMediaBtn = null;
+            });
+
+            mediaControls.appendChild(audioBtn);
         }
 
-        popupContent += `</div>`;
+        // Add video player if available
+        if (landmark.video) {
+            var videoBtn = document.createElement('div');
+            videoBtn.className = 'media-btn';
+            videoBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
 
-        // Bind popup and force it to open
+            var videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+            videoContainer.id = 'video-' + landmark.name.replace(/\s+/g, '-');
+
+            videoBtn.addEventListener('click', function() {
+                // Stop any currently playing media
+                stopAllMedia();
+
+                if (videoContainer.style.display === 'none' || !videoContainer.style.display) {
+                    videoContainer.innerHTML = `
+                        <iframe src="${landmark.video}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>`;
+                    videoContainer.style.display = 'block';
+                    videoBtn.classList.add('active');
+                    videoBtn.innerHTML = '<i class="fas fa-times"></i> Close Video';
+                    currentVideoContainer = videoContainer;
+                    currentMediaBtn = videoBtn;
+                } else {
+                    videoContainer.style.display = 'none';
+                    videoContainer.innerHTML = '';
+                    videoBtn.classList.remove('active');
+                    videoBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
+                    currentVideoContainer = null;
+                    currentMediaBtn = null;
+                }
+            });
+
+            mediaControls.appendChild(videoBtn);
+            mediaControls.appendChild(videoContainer);
+        }
+
+        popupContent.appendChild(mediaControls);
+
+        // Bind popup to marker
         marker.bindPopup(popupContent);
 
-        // Open popup immediately to test visibility
-        marker.openPopup();
+        // Stop media when popup closes
+        marker.on('popupclose', function() {
+            stopAllMedia();
+        });
     });
 
     // Add scale control
