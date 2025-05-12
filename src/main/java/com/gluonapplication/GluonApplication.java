@@ -29,7 +29,7 @@ public class GluonApplication extends Application {
         System.out.println("DLL loaded successfully!");
         appManager.addViewFactory(PRIMARY_VIEW, HomeView::new);
         appManager.addViewFactory(MAP_VIEW, MapViews::new);
-        appManager.addViewFactory(TOURS_VIEW, WebViewTry::new);
+        appManager.addViewFactory(TOURS_VIEW, WebViews::new);
         appManager.addViewFactory(QUIZ_VIEW, QuizView::new);
         //appManager.addViewFactory(SETTINGS_VIEW, SettingsView::new);
 

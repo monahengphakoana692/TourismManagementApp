@@ -55,11 +55,11 @@ public class MapViews extends View {
     }
 
     private void loadHotspots() {
-        hotspots.add(new Hotspot("1", "Thaba-Bosiu",
-                "Mountain fortress of King Moshoeshoe",
+        hotspots.add(new Hotspot("1", "Avani Maseru",
+                "The most exciting hotel in lesotho",
                 new MapPoint(100, 100),
-                "/icon.png",
-                "/sample.mp3",
+                "/Avani.jpeg",
+                "/Avanini.mp3",
                 null));
 
         hotspots.add(new Hotspot("2", "Maletsunyane Falls",
@@ -68,6 +68,13 @@ public class MapViews extends View {
                 "/MaleFalls.jpeg",
                 "/Falls.mp3",
                 "/FallVideo.mp4"));
+
+        hotspots.add(new Hotspot("2", "Katse Dam",
+                "Water facility in lesotho",
+                new MapPoint(-29.986, 28.987),
+                "/katse.png",
+                "/Falls.mp3",
+                "/katse.mp4"));
     }
 
     private void createHotspotLayer() {
@@ -263,3 +270,5 @@ public class MapViews extends View {
 
     }
 }
+
+
