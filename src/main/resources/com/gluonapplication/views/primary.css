@@ -1,52 +1,58 @@
+/* primary.css */
 .root {
-    /*-fx-background-color: white;*/
+    -fx-background-color: #fafafa;
 }
 
-#title {
-    -fx-font-family: "Georgia";
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-text-fill: black;
+.scroll-pane {
+    -fx-background-color: transparent;
 }
 
-.subtitle {
-    -fx-font-family: "Georgia";
-    -fx-font-size: 24px;
-    -fx-font-style: italic;
-    -fx-text-fill: #555555;
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
 }
 
-#image-card {
-
-
-    -fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-cursor:hand;
+/* Material Design Colors */
+.material-indigo {
+    -fx-background-color: #3F51B5;
 }
 
-#image-card-label {
-    -fx-font-family: "Arial";
+.material-indigo-dark {
+    -fx-background-color: #303F9F;
+}
+
+.material-text-primary {
+    -fx-text-fill: #212121;
+}
+
+.material-text-secondary {
+    -fx-text-fill: #757575;
+}
+
+.material-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.material-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.16), 8, 0, 0, 2);
+}
+
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 8 16;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-text-fill: black;
 }
 
-.footer {
-    -fx-font-family: "Georgia";
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: black;
-}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .destination-card {
+        -fx-max-width: 100%;
+    }
 
-/* AppBar styling */
-.app-bar {
-    -fx-background-color: #2c3e50;
-}
-
-.app-bar .title {
-    -fx-text-fill: white;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-}
-
-.app-bar .icon {
-    -fx-fill: white;
+    .destination-image {
+        -fx-fit-width: 100%;
+    }
 }

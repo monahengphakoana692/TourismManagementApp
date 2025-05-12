@@ -1,281 +1,109 @@
 package com.gluonapplication.views;
 
-import com.gluonapplication.GluonApplication;
 import com.gluonapplication.MultiMediaView;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.mvc.View;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 
+public class HomeView extends View {
 
-public class HomeView extends View
-{
-    private String imageHolderID = "imageHolders";
-    TextField searchBar = new TextField();
-    String searcedWord = null;
-    boolean isSearch = false;
-    String imageUrl = null;
-    String videoUrl = null;
+    private TextField searchBar = new TextField();
+    private boolean searchActive = false;
 
-
-    public HomeView()
-    {
-        {
-            try {
-                searchBar.setPromptText("search");
-                searchBar.setStyle("-fx-background-color:white; -fx-border-radius:20px; -fx-border-width:2px;");
-                searchBar.setOnKeyPressed(keyEvent -> {
-
-                    searcedWord = searchBar.getText();
-
-                    showFullView(TourDescriptor(searcedWord));
-                });
-            } catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-        getStylesheets().add(HomeView.class.getResource("primary.css").toExternalForm());
-
-        // Main container with white background
+    public HomeView() {
+        // Main scrollable container
         ScrollPane rootPane = new ScrollPane();
-        rootPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        rootPane.setFitToWidth(true);
+        rootPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        rootPane.setStyle("-fx-background-color: #fafafa;");
 
         // Main content container
-        VBox mainContent = new VBox(15);
+        VBox mainContent = new VBox(16);
         mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.setPadding(new Insets(20));
-        mainContent.setMaxWidth(800);
+        mainContent.setPadding(new Insets(16));
+        mainContent.setStyle("-fx-background-color: #fafafa;");
 
-        // Magazine header
-        VBox header = new VBox(5);
-        header.setAlignment(Pos.CENTER);
+        // Header section
+        VBox header = new VBox(8);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(16, 16, 24, 16));
 
         Label title = new Label("Tour Lesotho");
-        title.setId("title");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #212121;");
 
-        Label subtitle = new Label("Venice: Life On The Edge");
-        subtitle.setFont(Font.font("Georgia", FontPosture.ITALIC, 24));
-        subtitle.setTextFill(Color.DARKGRAY);
+        Label subtitle = new Label("Discover the Mountain Kingdom");
+        subtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
 
         header.getChildren().addAll(title, subtitle);
 
-        // Your original grid (unchanged structure)
-        VBox gridContainer = new VBox(20);
+        // Content cards
+        VBox cardsContainer = new VBox(16);
+        cardsContainer.setPadding(new Insets(8));
 
-        // First row
-        HBox row1 = new HBox(20);
-        row1.setAlignment(Pos.CENTER);
+        cardsContainer.getChildren().addAll(
+                createDestinationCard("The Maletsunyane Waterfall", "/MaleFalls.jpeg"),
+                createDestinationCard("AVANI Maseru Hotel", "/Avani.jpeg"),
+                createDestinationCard("The Katse Dam Lesotho", "/katse.png")
+        );
 
-        VBox column1 = createImageCard("The Maletsunyane Water Fall", "/MaleFalls.jpeg");
-        column1.setId(imageHolderID);
-        row1.getChildren().addAll(column1);
-
-        // Second row
-        HBox row2 = new HBox(20);
-        row2.setAlignment(Pos.CENTER);
-
-        HBox row3 = new HBox(20);
-        row3.setAlignment(Pos.CENTER);
-
-        VBox column3 = createImageCard("AVANI Maseru Hotel", "/Avani.jpeg");
-        column3.setId(imageHolderID);
-        row2.getChildren().addAll(column3);
-
-        VBox column4 = createImageCard("The Katse Dam Lesotho", "/katse.png");
-        column4.setId(imageHolderID);
-        row3.getChildren().addAll(column4);
-
-
-        gridContainer.getChildren().addAll(row1, row2,row3);
-
-        // Magazine footer
-        Label footer = new Label("Touring guide!");
-        footer.setFont(Font.font("Georgia", FontWeight.BOLD, 28));
-        footer.setTextFill(Color.BLACK);
-        footer.setAlignment(Pos.CENTER_RIGHT);
-        footer.setPadding(new Insets(20, 50, 0, 0));
-
-        mainContent.getChildren().addAll(header, gridContainer, footer);
-        //rootPane.getChildren().add(mainContent);
+        mainContent.getChildren().addAll(header, cardsContainer);
         rootPane.setContent(mainContent);
         setCenter(rootPane);
+
+        // Initialize search bar
+        searchBar.setPromptText("Search destinations...");
+        searchBar.setStyle("-fx-background-color: white; -fx-background-radius: 20; " +
+                "-fx-border-radius: 20; -fx-padding: 8 16; -fx-font-size: 14px;");
+        searchBar.setMaxWidth(200);
     }
 
-    private VBox createImageCard(String title, String imageUrl) {
-        this.imageUrl = imageUrl;
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(15));
-        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-cursor:hand;");
-        card.setId("image-card");
+    private VBox createDestinationCard(String title, String imageUrl) {
+        VBox card = new VBox();
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);");
 
         MultiMediaView mediaView = new MultiMediaView();
         mediaView.setImageUrl(imageUrl);
-        mediaView.getImageView().setFitWidth(240);
-        mediaView.getImageView().setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);");
+        mediaView.getImageView().setFitWidth(360);
+        mediaView.getImageView().setPreserveRatio(true);
+        mediaView.getImageView().setStyle("-fx-background-radius: 8 8 0 0;");
 
-        Label label = new Label(title);
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        label.setTextFill(Color.BLACK);
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #212121; " +
+                "-fx-padding: 12 16;");
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
 
-        card.getChildren().addAll(mediaView.getImageView(), label);
-
-        // Add click handler to show full view
-        card.setOnMouseClicked(e -> showFullView(title));
-
-        return card;
-    }
-    private VBox createVideoCard(String title, String videoUrl) {
-        this.videoUrl = videoUrl;
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(15));
-        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1;");
-        card.setId("video-card");
-
-        MultiMediaView mediaView = new MultiMediaView();
-        mediaView.setVideoUrl(videoUrl);
-
-        // Set up media player and view
-        MediaPlayer player = new MediaPlayer(new Media(videoUrl));
-        MediaView spotMedeia = new MediaView(player);
-        spotMedeia.setFitWidth(240);
-        spotMedeia.setPreserveRatio(true);
-        spotMedeia.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);");
-
-        // Add play button overlay
-        Button playButton = new Button("▶");
-        playButton.setStyle("-fx-background-radius: 30; -fx-font-size: 14; -fx-background-color: rgba(0,0,0,0.7); -fx-text-fill: white;");
-        playButton.setOnAction(e -> player.play());
-
-        StackPane mediaContainer = new StackPane(spotMedeia, playButton);
-        StackPane.setAlignment(playButton, Pos.CENTER);
-
-        Label label = new Label(title);
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        label.setTextFill(Color.BLACK);
-
-        card.getChildren().addAll(mediaContainer, label);
-
-        // Add click handler to show full view
-        card.setOnMouseClicked(e -> showFullView(title));
-
+        card.getChildren().addAll(mediaView.getImageView(), titleLabel);
         return card;
     }
 
     @Override
-    protected void updateAppBar(AppBar appBar)
-    {
-
-        appBar.setNavIcon(MaterialDesignIcon.MENU.button(e ->
-                {
-                        getAppManager().getDrawer().open();
-                  if(isSearch==true)
-                  {
-                      appBar.getActionItems().clear();
-                      appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(new EventHandler<ActionEvent>() {
-                          @Override
-                          public void handle(ActionEvent e) {
-                          }
-                      }));
-
-                      isSearch=false;
-                  }
-
-                }
-        ));
-        appBar.setTitleText("HOME");
-        appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e ->
-                {
-                    appBar.getActionItems().clear();
-                    appBar.setNavIcon(MaterialDesignIcon.MENU.button(new EventHandler<ActionEvent>()
-                         {
-                             @Override
-                             public void handle(ActionEvent e) {
-                                 HomeView.this.getAppManager().getDrawer().open();
-                             }
-                         }
-                    ));
-                    appBar.setTitleText("HOME");
-                appBar.getActionItems().add(searchBar);
-                    isSearch = true;
-                }
-
-
-        ));
-    }
-
-    private void showFullView(String title) {
-        try {
-            String description = TourDescriptor(title);
-            String viewName = "FULL_VIEW_" + title.replaceAll("\\s+", "");
-
-            // Register the view if not already registered
-            if (!ViewManager.registeredViews.containsKey(viewName)) {
-                ViewManager.registerView(viewName, () -> {
-                    FullVideoView view = new FullVideoView(description);
-                    view.setVideoUrl(videoUrl);
-                    return view;
-                });
-            }
-
-            // Switch to the view
-            ViewManager.switchToView(viewName);
-        } catch (Exception e) {
-            System.err.println("Error showing full view: " + e.getMessage());
-            // Fallback to home view
-            getAppManager().switchView(GluonApplication.PRIMARY_VIEW);
+    protected void updateAppBar(AppBar appBar) {
+        if (searchActive) {
+            appBar.setNavIcon(MaterialDesignIcon.ARROW_BACK.button(e -> {
+                searchActive = false;
+                updateAppBar(appBar);
+            }));
+            appBar.setTitleText("");
+            appBar.getActionItems().clear();
+            appBar.getActionItems().add(searchBar);
+        } else {
+            appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
+            appBar.setTitleText("Home");
+            appBar.getActionItems().clear();
+            appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(e -> {
+                searchActive = true;
+                updateAppBar(appBar);
+                searchBar.requestFocus();
+            }));
         }
+        appBar.setStyle("-fx-background-color: #3F51B5;"); // Material Indigo 500
     }
-
-    private String TourDescriptor(String title)
-    {
-        String[] details = {
-                "Maletsunyane Falls is a 192-metre-high \n (630 ft) waterfall in the \n Southern African country Lesotho",
-                "Avani Lesotho Hotel & Casino is a \n luxurious hilltop hotel in Maseru,\n Lesotho, known for its \n stunning panoramic \n views of the city \nand surrounding mountains",
-                "The dam was completed in 1996 \n and is the second-largest \n double-curvature \n arch dam in Africa, rising about \n 185 meters high and stretching \n across the Malibamat’so River "
-
-        };
-        String specifics = null;
-
-        if(title.equals("The Maletsunyane Water Fall"))
-        {
-            specifics = details[0];
-            this.videoUrl = "/FallVideo.mp4";
-
-        }else if(title.equals("AVANI Maseru Hotel"))
-        {
-            specifics = details[1];
-            this.videoUrl = "/Avanii.mp4";
-
-        }else if(title.equals("The Katse Dam Lesotho"))
-        {
-            specifics = details[2];
-            this.videoUrl = "/katse.mp4";
-
-        }else if(title.equals("Quiz")){
-            System.out.println("Quiz");
-        }
-
-        return specifics;
-    }
-
 }
