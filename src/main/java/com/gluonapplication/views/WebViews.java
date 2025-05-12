@@ -24,15 +24,15 @@ public class WebViews extends View {
         // Create Lesotho landmarks with multimedia
         List<Landmark> landmarks = new ArrayList<>();
         landmarks.add(new Landmark(
-                "Avani Lesotho Hotel",
-                -29.315833,
-                27.486389,
-                "hotel",
+                "Thaba Bosiu",  // Changed name to reflect the actual location
+                -29.3667,       // Latitude for Thaba Bosiu
+                27.7167,        // Longitude for Thaba Bosiu
+                "historic",     // Changed type to historic
                 getClass().getResource("/Avanini.mp3").toExternalForm(),
                 getClass().getResource("/Avani.jpeg").toExternalForm(),
                 "#3498db",
                 "Maseru, Lesotho",
-                "https://www.youtube.com/embed/avani_hotel_video"  // Video URL
+                "https://www.youtube.com/embed/thaba_bosiu_video"  // Updated video reference
         ));
         landmarks.add(new Landmark(
                 "Maletsunyane Falls",
