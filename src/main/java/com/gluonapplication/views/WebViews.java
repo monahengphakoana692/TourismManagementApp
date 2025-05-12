@@ -1,59 +1,147 @@
+
 package com.gluonapplication.views;
 
 import com.gluonhq.charm.glisten.mvc.View;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class WebViews extends View {
 
     private final WebView webView;
-    private static final String GMAPS_API_KEY = "AIzaSyAW5Xeqj0f17oA1--K59t1plRbW44cvFlY";
-    private static final double AVANI_LAT = -29.2;
-    private static final double AVANI_LON = 27.5;
 
     public WebViews() {
         webView = new WebView();
         webView.setPrefSize(800, 600);
 
-        // Load Google Maps centered on Avani location
-        loadGoogleMaps();
+        // Create Lesotho landmarks with absolute paths
+        List<Landmark> landmarks = new ArrayList<>();
+        landmarks.add(new Landmark(
+                "Avani Lesotho Hotel",
+                -29.315833,
+                27.486389,
+                "hotel",
+                getClass().getResource("/Avanini.mp3").toExternalForm(),
+                getClass().getResource("/Avani.jpeg").toExternalForm(),
+                "#3498db",
+                "Maseru, Lesotho"  // Added location info
+        ));
+        landmarks.add(new Landmark(
+                "Maletsunyane Falls",
+                -29.8377,
+                28.5333,
+                "waterfall",
+                getClass().getResource("/Falls.mp3").toExternalForm(),
+                getClass().getResource("/maleFalls.jpeg").toExternalForm(),
+                "#2ecc71",
+                "Semonkong, Lesotho"
+        ));
+        landmarks.add(new Landmark(
+                "Katse Dam",
+                -29.2606,
+                28.4889,
+                "dam",
+                getClass().getResource("/Falls.mp3").toExternalForm(),
+                getClass().getResource("/katse.png").toExternalForm(),
+                "#e74c3c",
+                "Katse, Lesotho"
+        ));
 
-        setCenter(new StackPane(webView));
+        loadLeafletMap(landmarks);
+
+        StackPane root = new StackPane(webView);
+        setCenter(root);
     }
 
-    private void loadGoogleMaps() {
-        // Build the Google Maps URL without string formatting issues
-        String gmapsUrl = "https://www.google.com/maps/embed/v1/view" +
-                "?key=" + GMAPS_API_KEY +
-                "&center=" + AVANI_LAT + "," + AVANI_LON +
-                "&zoom=14" +
-                "&maptype=roadmap";
+    private void loadLeafletMap(List<Landmark> landmarks) {
+        try (InputStream is = getClass().getResourceAsStream("/maps.html")) {
+            if (is == null) {
+                System.err.println("maps.html not found in resources!");
+                return;
+            }
 
-        String htmlContent = "<!DOCTYPE html>" +
-                "<html>" +
-                "<head>" +
-                "<style>" +
-                "body, html, #map-container {" +
-                "    margin: 0;" +
-                "    padding: 0;" +
-                "    width: 100%;" +
-                "    height: 100%;" +
-                "    overflow: hidden;" +
-                "}" +
-                "iframe {" +
-                "    border: none;" +
-                "    width: 100%;" +
-                "    height: 100%;" +
-                "}" +
-                "</style>" +
-                "</head>" +
-                "<body>" +
-                "<div id=\"map-container\">" +
-                "<iframe src=\"" + gmapsUrl + "\" allowfullscreen></iframe>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+            String html = new BufferedReader(new InputStreamReader(is))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
 
-        webView.getEngine().loadContent(htmlContent);
+            String landmarksJson = convertLandmarksToJson(landmarks);
+            html = html.replace("/*LANDMARKS_PLACEHOLDER*/", "var landmarks = " + landmarksJson + ";");
+
+            webView.getEngine().loadContent(html);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error loading maps.html content");
+        }
+    }
+
+    private String convertLandmarksToJson(List<Landmark> landmarks) {
+        StringBuilder sb = new StringBuilder("[");
+        for (Landmark landmark : landmarks) {
+            sb.append(String.format(
+                    "{" +
+                            "\"name\":\"%s\"," +
+                            "\"lat\":%f," +
+                            "\"lng\":%f," +
+                            "\"type\":\"%s\"," +
+                            "\"audio\":\"%s\"," +
+                            "\"image\":\"%s\"," +
+                            "\"color\":\"%s\"," +
+                            "\"location\":\"%s\"" +
+                            "},",
+                    landmark.getName(),
+                    landmark.getLatitude(),
+                    landmark.getLongitude(),
+                    landmark.getType(),
+                    landmark.getAudio(),
+                    landmark.getImage(),
+                    landmark.getColor(),
+                    landmark.getLocation()
+            ));
+        }
+        if (!landmarks.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private static class Landmark {
+        private final String name;
+        private final double latitude;
+        private final double longitude;
+        private final String type;
+        private final String audio;
+        private final String image;
+        private final String color;
+        private final String location;
+
+        public Landmark(String name, double latitude, double longitude,
+                        String type, String audio, String image, String color, String location) {
+            this.name = name;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.type = type;
+            this.audio = audio;
+            this.image = image;
+            this.color = color;
+            this.location = location;
+        }
+
+        public String getName() { return name; }
+        public double getLatitude() { return latitude; }
+        public double getLongitude() { return longitude; }
+        public String getType() { return type; }
+        public String getAudio() { return audio; }
+        public String getImage() { return image; }
+        public String getColor() { return color; }
+
+        public String getLocation() { return location; }
+
     }
 }
