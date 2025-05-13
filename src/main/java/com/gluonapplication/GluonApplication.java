@@ -18,6 +18,7 @@ public class GluonApplication extends Application {
     public static final String TOURS_VIEW = "Tours View";
     public static final String QUIZ_VIEW = "Quiz View";
     public static final String SETTINGS_VIEW = "Settings View";
+    public static final String FullVideo = "Video View";
 
     private final AppManager appManager = AppManager.initialize(this::postInit);
 
@@ -31,6 +32,11 @@ public class GluonApplication extends Application {
         appManager.addViewFactory(MAP_VIEW, MapViews::new);
         appManager.addViewFactory(TOURS_VIEW, WebViews::new);
         appManager.addViewFactory(QUIZ_VIEW, QuizView::new);
+        appManager.addViewFactory(FullVideo, () -> {
+            FullVideoView view = new FullVideoView();
+            // Default settings if needed
+            return view;
+        });
         //appManager.addViewFactory(SETTINGS_VIEW, SettingsView::new);
 
         DrawerManager.buildDrawer(appManager);

@@ -16,7 +16,7 @@ import javafx.scene.text.FontWeight;
 
 public class FullVideoView extends View {
 
-    private final String title;
+    private String title;
     private String videoUrl;
     private MediaPlayer mediaPlayer;
     private MediaView mediaView;
@@ -25,6 +25,11 @@ public class FullVideoView extends View {
 
     public FullVideoView(String title) {
         this.title = title;
+
+        // Initialize UI components
+        createUI();
+    }
+    public FullVideoView() {
 
         // Initialize UI components
         createUI();
@@ -103,6 +108,15 @@ public class FullVideoView extends View {
             errorLabel.setTextFill(javafx.scene.paint.Color.RED);
             root.getChildren().add(1, errorLabel);
         }
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+    public String getTitle()
+    {
+        return title;
     }
 
     @Override

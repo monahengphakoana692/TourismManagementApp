@@ -12,10 +12,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import static com.gluonapplication.GluonApplication.FullVideo;
+
 public class HomeView extends View {
 
     private TextField searchBar = new TextField();
     private boolean searchActive = false;
+    private FullVideoView fullVideoView;
+    Label subtitle;
+
 
     public HomeView() {
         // Main scrollable container
@@ -62,7 +67,46 @@ public class HomeView extends View {
         searchBar.setStyle("-fx-background-color: white; -fx-background-radius: 20; " +
                 "-fx-border-radius: 20; -fx-padding: 8 16; -fx-font-size: 14px;");
         searchBar.setMaxWidth(200);
+        searchBar.setOnKeyPressed(Event->{
+            String searched = searchBar.getText().toLowerCase();
+
+            if (searched.equals("maletsunyane falls") || searched.equals("katse dam")) {
+                String viewName = searched.replace(" ", "") + "View"; // e.g. "maletsunyane falls" -> "maletsunyane fallsView"
+
+                FullVideoView fullVideoView = new FullVideoView();
+                fullVideoView.setTitle(searched);
+                fullVideoView.setVideoUrl(searched.equals("maletsunyane falls") ? "/FallVideo.mp4" : getKatse(searched));
+
+                try {
+                    getAppManager().addViewFactory(viewName, () -> fullVideoView);
+                    getAppManager().switchView(viewName);
+                } catch (IllegalArgumentException e) {
+                    // View already exists, just switch to it
+                    getAppManager().switchView(viewName);
+                }
+            } else {
+                if (searchActive) {
+                    subtitle.setText("Searching things for you...");
+                } else {
+                    subtitle.setText("Discover the Mountain Kingdom");
+                }
+            }
+        });
     }
+
+    private String getKatse(String searched)
+    {
+        if(searched.equals("katse dam"))
+        {
+            return "/katse.mp4";
+        } else if (searched.equals("thaba bosiu"))
+        {
+            return "/katse.mp4";
+        }
+
+        return "";
+    }
+
 
     private VBox createDestinationCard(String title, String imageUrl) {
         VBox card = new VBox();
@@ -93,7 +137,7 @@ public class HomeView extends View {
             }));
             appBar.setTitleText("");
             appBar.getActionItems().clear();
-            appBar.getActionItems().add(searchBar);
+            appBar.getActionItems().addAll(searchBar);
         } else {
             appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> getAppManager().getDrawer().open()));
             appBar.setTitleText("Home");
