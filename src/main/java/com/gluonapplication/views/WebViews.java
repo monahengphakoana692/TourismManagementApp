@@ -141,7 +141,6 @@ public class WebViews extends View {
             this.location = location;
             this.video = video;
         }
-
         // Getters
         public String getName() { return name; }
         public double getLatitude() { return latitude; }
