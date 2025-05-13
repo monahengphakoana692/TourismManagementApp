@@ -43,7 +43,7 @@ public class WebViews extends View {
                 getClass().getResource("/maleFalls.jpeg").toExternalForm(),
                 "#2ecc71",
                 "Semonkong, Lesotho",
-                getClass().getResource("/BosiuV.mp4").toExternalForm()
+                getClass().getResource("/FallVideo.mp4").toExternalForm()
         ));
         landmarks.add(new Landmark(
                 "Katse Dam",
@@ -54,7 +54,7 @@ public class WebViews extends View {
                 getClass().getResource("/katse.png").toExternalForm(),
                 "#e74c3c",
                 "Katse, Lesotho",
-                getClass().getResource("/BosiuV.mp4").toExternalForm()
+                getClass().getResource("/katse.mp4").toExternalForm()
         ));
 
         loadLeafletMap(landmarks);
