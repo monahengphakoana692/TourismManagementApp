@@ -24,15 +24,15 @@ public class WebViews extends View {
         // Create Lesotho landmarks with multimedia
         List<Landmark> landmarks = new ArrayList<>();
         landmarks.add(new Landmark(
-                "Thaba Bosiu",  // Changed name to reflect the actual location
-                -29.3667,       // Latitude for Thaba Bosiu
-                27.7167,        // Longitude for Thaba Bosiu
-                "historic",     // Changed type to historic
-                getClass().getResource("/Avanini.mp3").toExternalForm(),
-                getClass().getResource("/Avani.jpeg").toExternalForm(),
+                "Thaba Bosiu",
+                -29.3667,
+                27.7167,
+                "historic",
+                getClass().getResource("/Thabana.mp3").toExternalForm(),
+                getClass().getResource("/thabaBosiu.jpg").toExternalForm(),
                 "#3498db",
                 "Maseru, Lesotho",
-                "https://www.youtube.com/embed/thaba_bosiu_video"  // Updated video reference
+                getClass().getResource("/BosiuV.mp4").toExternalForm()  // Local video file
         ));
         landmarks.add(new Landmark(
                 "Maletsunyane Falls",
@@ -43,7 +43,7 @@ public class WebViews extends View {
                 getClass().getResource("/maleFalls.jpeg").toExternalForm(),
                 "#2ecc71",
                 "Semonkong, Lesotho",
-                "https://www.youtube.com/embed/maletsunyane_falls_video"
+                getClass().getResource("/BosiuV.mp4").toExternalForm()
         ));
         landmarks.add(new Landmark(
                 "Katse Dam",
@@ -54,7 +54,7 @@ public class WebViews extends View {
                 getClass().getResource("/katse.png").toExternalForm(),
                 "#e74c3c",
                 "Katse, Lesotho",
-                "https://www.youtube.com/embed/katse_dam_video"
+                getClass().getResource("/BosiuV.mp4").toExternalForm()
         ));
 
         loadLeafletMap(landmarks);

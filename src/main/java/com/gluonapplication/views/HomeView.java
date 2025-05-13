@@ -54,7 +54,7 @@ public class HomeView extends View {
 
         cardsContainer.getChildren().addAll(
                 createDestinationCard("The Maletsunyane Waterfall", "/MaleFalls.jpeg"),
-                createDestinationCard("AVANI Maseru Hotel", "/Avani.jpeg"),
+                createDestinationCard("Thaba Bosiu", "/thabaBosiu.jpg"),
                 createDestinationCard("The Katse Dam Lesotho", "/katse.png")
         );
 
@@ -110,9 +110,11 @@ public class HomeView extends View {
 
     private VBox createDestinationCard(String title, String imageUrl) {
         VBox card = new VBox();
+        card.setAlignment(Pos.CENTER);
         card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);");
 
+        // Create the media view
         MultiMediaView mediaView = new MultiMediaView();
         mediaView.setImageUrl(imageUrl);
         mediaView.getImageView().setFitWidth(360);
@@ -125,6 +127,35 @@ public class HomeView extends View {
         titleLabel.setMaxWidth(Double.MAX_VALUE);
 
         card.getChildren().addAll(mediaView.getImageView(), titleLabel);
+
+        // Add hover effects
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 4); -fx-cursor:hand;");
+            card.setScaleX(1.02);
+            card.setScaleY(1.02);
+            card.setTranslateY(-2); // Slight lift effect
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2); -fx-cursor:hand;");
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+            card.setTranslateY(0);
+        });
+
+        // Add click effect
+        card.setOnMousePressed(e -> {
+            card.setScaleX(0.98);
+            card.setScaleY(0.98);
+        });
+
+        card.setOnMouseReleased(e -> {
+            card.setScaleX(1.02);
+            card.setScaleY(1.02);
+        });
+
         return card;
     }
 

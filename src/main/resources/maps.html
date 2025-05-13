@@ -178,7 +178,7 @@
         mediaControls.className = 'media-control';
 
         // Add audio player if available
-        if (landmark.audio) {
+        if(landmark.audio) {
             var audioBtn = document.createElement('div');
             audioBtn.className = 'media-btn';
             audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
@@ -216,45 +216,48 @@
             mediaControls.appendChild(audioBtn);
         }
 
-        // Add video player if available
-        if (landmark.video) {
-            var videoBtn = document.createElement('div');
-            videoBtn.className = 'media-btn';
+// Add video player if available
+if (landmark.video) {
+    var videoBtn = document.createElement('div');
+    videoBtn.className = 'media-btn';
+    videoBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
+
+    var videoContainer = document.createElement('div');
+    videoContainer.className = 'video-container';
+    videoContainer.id = 'video-' + landmark.name.replace(/\s+/g, '-');
+
+    videoBtn.addEventListener('click', function () {
+        // Stop any currently playing media
+        stopAllMedia();
+
+        if (videoContainer.style.display === 'none' || !videoContainer.style.display) {
+            videoContainer.innerHTML = `
+                <video controls width="100%">
+                    <source src="${landmark.video}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+            videoContainer.style.display = 'block';
+            videoBtn.classList.add('active');
+            videoBtn.innerHTML = '<i class="fas fa-times"></i> Close Video';
+            currentVideoContainer = videoContainer;
+            currentMediaBtn = videoBtn;
+
+            // Auto-play when opened
+            var videoElement = videoContainer.querySelector('video');
+            videoElement.play();
+        } else {
+            videoContainer.style.display = 'none';
+            videoContainer.innerHTML = '';
+            videoBtn.classList.remove('active');
             videoBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
-
-            var videoContainer = document.createElement('div');
-            videoContainer.className = 'video-container';
-            videoContainer.id = 'video-' + landmark.name.replace(/\s+/g, '-');
-
-            videoBtn.addEventListener('click', function() {
-                // Stop any currently playing media
-                stopAllMedia();
-
-                if (videoContainer.style.display === 'none' || !videoContainer.style.display) {
-                    videoContainer.innerHTML = `
-                        <iframe src="${landmark.video}"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                        </iframe>`;
-                    videoContainer.style.display = 'block';
-                    videoBtn.classList.add('active');
-                    videoBtn.innerHTML = '<i class="fas fa-times"></i> Close Video';
-                    currentVideoContainer = videoContainer;
-                    currentMediaBtn = videoBtn;
-                } else {
-                    videoContainer.style.display = 'none';
-                    videoContainer.innerHTML = '';
-                    videoBtn.classList.remove('active');
-                    videoBtn.innerHTML = '<i class="fas fa-video"></i> Watch Video';
-                    currentVideoContainer = null;
-                    currentMediaBtn = null;
-                }
-            });
-
-            mediaControls.appendChild(videoBtn);
-            mediaControls.appendChild(videoContainer);
+            currentVideoContainer = null;
+            currentMediaBtn = null;
         }
+    });
+
+    mediaControls.appendChild(videoBtn);
+    mediaControls.appendChild(videoContainer);
+}
 
         popupContent.appendChild(mediaControls);
 
