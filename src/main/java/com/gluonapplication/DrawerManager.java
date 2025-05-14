@@ -21,7 +21,7 @@ public class DrawerManager {
 
         NavigationDrawer.Header header = new NavigationDrawer.Header("Lesotho Tour Guide",
                 "Explore the Mountain Kingdom",
-                new Avatar(21, new Image(DrawerManager.class.getResourceAsStream("/icon.png"))));
+                new Avatar(21, new Image(DrawerManager.class.getResourceAsStream("/lesotho.png"))));
         drawer.setHeader(header);
 
 
