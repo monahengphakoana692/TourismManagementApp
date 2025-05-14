@@ -50,7 +50,7 @@ public class WebViews extends View {
                 -29.2606,
                 28.4889,
                 "dam",
-                getClass().getResource("/Falls.mp3").toExternalForm(),
+                getClass().getResource("/KaseDam.mp3").toExternalForm(),
                 getClass().getResource("/katse.png").toExternalForm(),
                 "#e74c3c",
                 "Katse, Lesotho",

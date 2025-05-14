@@ -156,6 +156,23 @@ public class HomeView extends View {
             card.setScaleY(1.02);
         });
 
+        card.setOnMouseClicked(e->{
+            String viewName = titleLabel.getText().replaceAll("\\s+", "") + System.nanoTime(); // Unique name
+
+            FullVideoView fullVideoView = new FullVideoView();
+
+            if(titleLabel.getText().equals("The Maletsunyane Waterfall")) {
+                fullVideoView.setVideoUrl("/FallVideo.mp4");
+            } else if(titleLabel.getText().equals("Thaba Bosiu")) {
+                fullVideoView.setVideoUrl("/BosiuV.mp4");
+            } else if(titleLabel.getText().equals("The Katse Dam Lesotho")) {
+                fullVideoView.setVideoUrl("/katse.mp4");
+            }
+
+            getAppManager().addViewFactory(viewName, () -> fullVideoView);
+            getAppManager().switchView(viewName);
+        });
+
         return card;
     }
 
