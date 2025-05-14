@@ -70,18 +70,25 @@ public class HomeView extends View {
         searchBar.setOnKeyPressed(Event->{
             String searched = searchBar.getText().toLowerCase();
 
-            if (searched.equals("maletsunyane falls") || searched.equals("katse dam")) {
-                String viewName = searched.replace(" ", "") + "View"; // e.g. "maletsunyane falls" -> "maletsunyane fallsView"
+            if (searched.equals("pioneer mall") || searched.equals("sehlabathebe national park")) {
+                String viewName = searched.replace(" ", "") + "View";
 
                 FullVideoView fullVideoView = new FullVideoView();
                 fullVideoView.setTitle(searched);
-                fullVideoView.setVideoUrl(searched.equals("maletsunyane falls") ? "/FallVideo.mp4" : getKatse(searched));
+
+                // Assign video based on search
+                if (searched.equals("pioneer mall"))
+                {
+                    fullVideoView.setVideoUrl("/PML.mp4");
+                } else if (searched.equals("sehlabathebe national park"))
+                {
+                    fullVideoView.setVideoUrl("/SNP.mp4");
+                }
 
                 try {
                     getAppManager().addViewFactory(viewName, () -> fullVideoView);
                     getAppManager().switchView(viewName);
                 } catch (IllegalArgumentException e) {
-                    // View already exists, just switch to it
                     getAppManager().switchView(viewName);
                 }
             } else {
@@ -96,10 +103,11 @@ public class HomeView extends View {
 
     private String getKatse(String searched)
     {
-        if(searched.equals("katse dam"))
+        if(searched.equals("thaba bosiu"))
         {
             return "/katse.mp4";
-        } else if (searched.equals("thaba bosiu"))
+
+        } else if (searched.equals("katse dam"))
         {
             return "/katse.mp4";
         }
