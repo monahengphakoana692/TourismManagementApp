@@ -178,43 +178,98 @@
         mediaControls.className = 'media-control';
 
         // Add audio player if available
-        if(landmark.audio) {
-            var audioBtn = document.createElement('div');
-            audioBtn.className = 'media-btn';
+      if(landmark.audio) {
+    var audioBtn = document.createElement('div');
+    audioBtn.className = 'media-btn';
+    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+
+    var audioPlayer = document.createElement('audio');
+    audioPlayer.src = landmark.audio;
+
+    // Add error handling for the audio element
+    audioPlayer.addEventListener('error', function() {
+        console.error('Audio error:', audioPlayer.error);
+        audioBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Audio Error';
+        audioBtn.style.color = '#e74c3c';
+        audioBtn.classList.remove('active');
+
+        // Disable the button after error
+        audioBtn.style.pointerEvents = 'none';
+
+        // Notify JavaFX about the error if bridge exists
+        if (window.jsBridge) {
+            window.jsBridge.showAlert('Audio Error', 'Could not play the audio guide. The file may be corrupted or unavailable.');
+        }
+    });
+
+    // Add loading state handling
+    audioPlayer.addEventListener('waiting', function() {
+        audioBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    });
+
+    audioPlayer.addEventListener('canplay', function() {
+        if (audioPlayer.paused) {
             audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+        }
+    });
 
-            var audioPlayer = document.createElement('audio');
-            audioPlayer.src = landmark.audio;
+    audioBtn.addEventListener('click', function() {
+        // Stop any currently playing media
+        stopAllMedia();
 
-            audioBtn.addEventListener('click', function() {
-                // Stop any currently playing media
-                stopAllMedia();
+        if (audioPlayer.paused) {
+            // Show loading state immediately
+            audioBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
 
-                if (audioPlayer.paused) {
-                    audioPlayer.play();
+            var playPromise = audioPlayer.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    // Successfully started playing
                     audioBtn.classList.add('active');
                     audioBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Audio';
                     currentAudio = audioPlayer;
                     currentMediaBtn = audioBtn;
-                } else {
-                    audioPlayer.pause();
-                    audioBtn.classList.remove('active');
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
-                    currentAudio = null;
-                    currentMediaBtn = null;
-                }
-            });
+                }).catch(function(error) {
+                    console.error('Playback failed:', error);
+                    audioBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Play Failed';
+                    audioBtn.style.color = '#e74c3c';
 
-            // Handle when audio ends naturally
-            audioPlayer.addEventListener('ended', function() {
-                audioBtn.classList.remove('active');
-                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
-                currentAudio = null;
-                currentMediaBtn = null;
-            });
-
-            mediaControls.appendChild(audioBtn);
+                    if (window.jsBridge) {
+                        window.jsBridge.showAlert('Playback Error', 'Could not start audio playback. Please try again.');
+                    }
+                });
+            }
+        } else {
+            audioPlayer.pause();
+            audioBtn.classList.remove('active');
+            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+            currentAudio = null;
+            currentMediaBtn = null;
         }
+    });
+
+    // Handle when audio ends naturally
+    audioPlayer.addEventListener('ended', function() {
+        audioBtn.classList.remove('active');
+        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+        currentAudio = null;
+        currentMediaBtn = null;
+    });
+
+    // Handle when popup closes to ensure audio stops
+    marker.on('popupclose', function() {
+        if (currentAudio === audioPlayer) {
+            audioPlayer.pause();
+            audioBtn.classList.remove('active');
+            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Audio Guide';
+            currentAudio = null;
+            currentMediaBtn = null;
+        }
+    });
+
+    mediaControls.appendChild(audioBtn);
+}
 
 // Add video player if available
 if (landmark.video) {
@@ -232,7 +287,7 @@ if (landmark.video) {
 
         if (videoContainer.style.display === 'none' || !videoContainer.style.display) {
             videoContainer.innerHTML = `
-                <video controls width="100%">
+                <video controls width="100%" onerror="handleVideoError(this)">
                     <source src="${landmark.video}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>`;
@@ -242,9 +297,15 @@ if (landmark.video) {
             currentVideoContainer = videoContainer;
             currentMediaBtn = videoBtn;
 
-            // Auto-play when opened
+            // Auto-play when opened (with error handling)
             var videoElement = videoContainer.querySelector('video');
-            videoElement.play();
+            var playPromise = videoElement.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    handleVideoError(videoElement);
+                });
+            }
         } else {
             videoContainer.style.display = 'none';
             videoContainer.innerHTML = '';
@@ -272,6 +333,20 @@ if (landmark.video) {
 
     // Add scale control
     L.control.scale().addTo(map);
+
+    function handleVideoError(videoElement) {
+    console.error("Video error occurred");
+    videoElement.parentNode.innerHTML = `
+        <div style="padding: 10px; background: #ffebee; border-radius: 4px;">
+            <i class="fas fa-exclamation-triangle" style="color: #f44336;"></i>
+            Could not load the video. The file may be corrupted or unavailable.
+        </div>`;
+
+    // Notify JavaFX about the error
+    if (window.jsBridge) {
+        window.jsBridge.showAlert("Video Error", "Could not play the video. The file may be corrupted or unavailable.");
+    }
+}
 </script>
 </body>
 </html>

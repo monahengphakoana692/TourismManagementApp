@@ -43,11 +43,14 @@ public class GluonApplication extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception
+    {
+        primaryStage.setResizable(false);
         appManager.start(primaryStage);
     }
 
-    private void postInit(Scene scene) {
+    private void postInit(Scene scene)
+    {
         Swatch.LIME.assignTo(scene); // Changed to blue for a travel app feel
         scene.getStylesheets().add(GluonApplication.class.getResource("style.css").toExternalForm());
         ((Stage) scene.getWindow()).getIcons().add(new Image(GluonApplication.class.getResourceAsStream("/lesotho.png")));
