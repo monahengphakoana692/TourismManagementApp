@@ -21,8 +21,13 @@ public class QuizView extends View {
 
     private int currentQuestion = 0;
     private int score = 0;
+    private final VBox quizLayout;
+    private final Label questionLabel;
+    private final Button[] answerButtons;
+    private final ProgressBar progress;
+    private final Label scoreLabel;
+
     private final String[][] questions = {
-            // Question, Correct Answer, Wrong Answers...
             {"What is the capital of Lesotho?", "Maseru", "Johannesburg", "Gaborone", "Maputo"},
             {"Thaba-Bosiu was the stronghold of which king?", "Moshoeshoe I", "Letsie I", "Moshoeshoe II", "Letsie II"},
             {"Maletsunyane Falls is one of the highest waterfalls in what region?", "Southern Africa", "East Africa", "West Africa", "North Africa"},
@@ -42,130 +47,168 @@ public class QuizView extends View {
 
     public QuizView() {
         // Create UI elements
-        Label questionLabel = new Label();
-        questionLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        questionLabel.setTextFill(Color.web("#2c3e50"));
-        questionLabel.setWrapText(true);
-        questionLabel.setAlignment(Pos.CENTER);
-        questionLabel.setMaxWidth(Double.MAX_VALUE);
-
-        Button[] answerButtons = new Button[4];
-        for (int i = 0; i < 4; i++) {
-            answerButtons[i] = new Button();
-            answerButtons[i].setMaxWidth(Double.MAX_VALUE);
-            answerButtons[i].setFont(Font.font("Arial", 14));
-            answerButtons[i].setStyle("-fx-background-radius: 10;");
-            final int index = i;
-            answerButtons[i].setOnAction(e -> checkAnswer(index));
-        }
-
-        ProgressBar progress = new ProgressBar();
-        progress.setStyle("-fx-accent: #3498db;");
-
-        Label scoreLabel = new Label("Score: 0");
-        scoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        scoreLabel.setTextFill(Color.web("#3498db"));
+        questionLabel = createQuestionLabel();
+        answerButtons = createAnswerButtons();
+        progress = createProgressBar();
+        scoreLabel = createScoreLabel();
 
         // Create layout
+        quizLayout = createQuizLayout();
+
+        // Set up the view
+        setCenter(quizLayout);
+        showQuestion(0);
+    }
+
+    private Label createQuestionLabel() {
+        Label label = new Label();
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        label.setTextFill(Color.web("#2c3e50"));
+        label.setWrapText(true);
+        label.setAlignment(Pos.CENTER);
+        label.setMaxWidth(Double.MAX_VALUE);
+        return label;
+    }
+
+    private Button[] createAnswerButtons() {
+        Button[] buttons = new Button[4];
+        for (int i = 0; i < 4; i++) {
+            buttons[i] = new Button();
+            buttons[i].setMaxWidth(Double.MAX_VALUE);
+            buttons[i].setFont(Font.font("Arial", 14));
+            buttons[i].setStyle("-fx-background-radius: 10; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50;");
+            final int index = i;
+            buttons[i].setOnAction(e -> checkAnswer(index));
+
+            // Make buttons expand to full width
+            HBox.setHgrow(buttons[i], Priority.ALWAYS);
+        }
+        return buttons;
+    }
+
+    private ProgressBar createProgressBar() {
+        ProgressBar pb = new ProgressBar();
+        pb.setStyle("-fx-accent: #3498db;");
+        return pb;
+    }
+
+    private Label createScoreLabel() {
+        Label label = new Label("Score: 0");
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        label.setTextFill(Color.web("#3498db"));
+        return label;
+    }
+
+    private VBox createQuizLayout() {
         VBox layout = new VBox(15, questionLabel, answerButtons[0], answerButtons[1],
                 answerButtons[2], answerButtons[3], progress, scoreLabel);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
         layout.setStyle("-fx-background-color: #f9f9f9;");
-
-        // Make buttons expand to full width
-        for (Button btn : answerButtons) {
-            HBox.setHgrow(btn, Priority.ALWAYS);
-            btn.setMaxWidth(Double.MAX_VALUE);
-        }
-
-        // Set up the view
-        setCenter(layout);
-        showQuestion(0);
+        return layout;
     }
 
     private void showQuestion(int index) {
         if (index < questions.length) {
             currentQuestion = index;
-            ((Label) ((VBox) getCenter()).getChildren().get(0)).setText(questions[index][0]);
+            questionLabel.setText(questions[index][0]);
 
-            // Shuffle answers for current question
-            String[] answers = new String[4];
-            System.arraycopy(questions[index], 1, answers, 0, 4);
-            shuffleArray(answers);
-
-            for (int i = 0; i < 4; i++) {
-                Button btn = (Button) ((VBox) getCenter()).getChildren().get(i + 1);
-                btn.setText(answers[i]);
+            // Reset all buttons to default style
+            for (Button btn : answerButtons) {
                 btn.setStyle("-fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50;");
             }
 
-            ((ProgressBar) ((VBox) getCenter()).getChildren().get(5)).setProgress((double) (index + 1) / questions.length);
-        } else {
-            // Quiz completed
-            VBox resultsBox = new VBox(20);
-            resultsBox.setAlignment(Pos.CENTER);
-            resultsBox.setPadding(new Insets(20));
-
-            Label resultLabel = new Label("Quiz Completed!");
-            resultLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-            resultLabel.setTextFill(Color.web("#2c3e50"));
-
-            Label scoreLabel = new Label("Final Score: " + score + "/" + questions.length);
-            scoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-            scoreLabel.setTextFill(Color.web("#3498db"));
-
-            String message;
-            if (score == questions.length) {
-                message = "Perfect! You know Lesotho very well!";
-            } else if (score >= questions.length * 0.7) {
-                message = "Great job! You have good knowledge of Lesotho!";
-            } else if (score >= questions.length * 0.4) {
-                message = "Not bad! Keep learning about Lesotho!";
-            } else {
-                message = "Keep exploring Lesotho to learn more!";
+            // Shuffle and set answers
+            String[] answers = new String[4];
+            System.arraycopy(questions[index], 1, answers, 0, 4);
+            shuffleArray(answers);
+            for (int i = 0; i < 4; i++) {
+                answerButtons[i].setText(answers[i]);
             }
 
-            Label messageLabel = new Label(message);
-            messageLabel.setFont(Font.font("Arial", 16));
-            messageLabel.setTextFill(Color.web("#7f8c8d"));
-            messageLabel.setWrapText(true);
-            messageLabel.setAlignment(Pos.CENTER);
-            messageLabel.setMaxWidth(300);
-
-            Button restartButton = new Button("Try Again");
-            restartButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
-            restartButton.setOnAction(e -> {
-                currentQuestion = 0;
-                score = 0;
-                showQuestion(0);
-            });
-
-            resultsBox.getChildren().addAll(resultLabel, scoreLabel, messageLabel, restartButton);
-            ((VBox) getCenter()).getChildren().setAll(resultsBox);
+            progress.setProgress((double) (index + 1) / questions.length);
+            scoreLabel.setText("Score: " + score);
+        } else {
+            showResults();
         }
     }
 
+    private void showResults() {
+        VBox resultsBox = new VBox(20);
+        resultsBox.setAlignment(Pos.CENTER);
+        resultsBox.setPadding(new Insets(20));
+
+        Label resultLabel = new Label("Quiz Completed!");
+        resultLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        resultLabel.setTextFill(Color.web("#2c3e50"));
+
+        Label finalScoreLabel = new Label("Final Score: " + score + "/" + questions.length);
+        finalScoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        finalScoreLabel.setTextFill(Color.web("#3498db"));
+
+        String message = getResultMessage();
+        Button restartButton = new Button();
+        restartButton.setStyle("-fx-opacity:0;");
+        Label messageLabel = createMessageLabel(message);
+        if(score!=questions.length)
+        {
+            restartButton = createRestartButton();
+            restartButton.setStyle("-fx-opacity:1;");
+        }
+
+
+        resultsBox.getChildren().addAll(resultLabel, finalScoreLabel, messageLabel, restartButton);
+        setCenter(resultsBox);
+    }
+
+    private String getResultMessage() {
+        if (score == questions.length) {
+            return "Perfect! You know Lesotho very well!";
+        } else if (score >= questions.length * 0.7) {
+            return "Great job! You have good knowledge of Lesotho!";
+        } else if (score >= questions.length * 0.4) {
+            return "Not bad! Keep learning about Lesotho!";
+        } else
+        {
+            return "Keep exploring Lesotho to learn more!";
+        }
+    }
+
+    private Label createMessageLabel(String message) {
+        Label label = new Label(message);
+        label.setFont(Font.font("Arial", 16));
+        label.setTextFill(Color.web("#7f8c8d"));
+        label.setWrapText(true);
+        label.setAlignment(Pos.CENTER);
+        label.setMaxWidth(300);
+        return label;
+    }
+
+    private Button createRestartButton() {
+        Button button = new Button("Try Again");
+        button.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+        button.setOnAction(e -> restartQuiz());
+        return button;
+    }
+
+    private void restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        setCenter(quizLayout); // Reset to the quiz layout
+        showQuestion(0); // Start from the first question
+    }
+
     private void checkAnswer(int selectedIndex) {
-        Button selectedButton = (Button) ((VBox) getCenter()).getChildren().get(selectedIndex + 1);
+        Button selectedButton = answerButtons[selectedIndex];
         String selectedAnswer = selectedButton.getText();
 
-        // Check if selected answer matches the first option (correct answer)
         if (selectedAnswer.equals(questions[currentQuestion][1])) {
             score++;
             selectedButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
-            ((Label) ((VBox) getCenter()).getChildren().get(6)).setText("Score: " + score);
+            scoreLabel.setText("Score: " + score);
         } else {
             selectedButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-
-            // Highlight correct answer
-            for (int i = 1; i < 5; i++) {
-                Button btn = (Button) ((VBox) getCenter()).getChildren().get(i);
-                if (btn.getText().equals(questions[currentQuestion][1])) {
-                    btn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
-                    break;
-                }
-            }
+            highlightCorrectAnswer();
         }
 
         // Delay next question to show feedback
@@ -174,7 +217,15 @@ public class QuizView extends View {
         pause.play();
     }
 
-    // Helper method to shuffle array
+    private void highlightCorrectAnswer() {
+        for (Button btn : answerButtons) {
+            if (btn.getText().equals(questions[currentQuestion][1])) {
+                btn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                break;
+            }
+        }
+    }
+
     private void shuffleArray(String[] array) {
         Random rnd = new Random();
         for (int i = array.length - 1; i > 0; i--) {

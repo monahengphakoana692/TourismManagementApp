@@ -2,7 +2,6 @@ package com.gluonapplication;
 
 import com.gluonapplication.views.*;
 import com.gluonhq.charm.glisten.application.AppManager;
-import com.gluonhq.charm.glisten.application.MobileApplication;
 import com.gluonhq.charm.glisten.visual.Swatch;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -17,7 +16,6 @@ public class GluonApplication extends Application {
     public static final String MAP_VIEW = "Map View";
     public static final String TOURS_VIEW = "Tours View";
     public static final String QUIZ_VIEW = "Quiz View";
-    public static final String SETTINGS_VIEW = "Settings View";
     public static final String FullVideo = "Video View";
 
     private final AppManager appManager = AppManager.initialize(this::postInit);

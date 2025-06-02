@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
 import javafx.concurrent.Worker;
 
@@ -20,9 +21,13 @@ import java.util.stream.Collectors;
 
 public class WebViews extends View {
 
-    private final WebView webView;
+    private WebView webView;
 
-    public WebViews() {
+    public WebViews()
+    {
+        try {
+
+
         webView = new WebView();
         webView.setPrefSize(800, 600);
 
@@ -35,10 +40,20 @@ public class WebViews extends View {
 
         StackPane root = new StackPane(webView);
         setCenter(root);
+
+        } catch (Exception e)
+        {
+            showAlert("got you babe ",e.getMessage());
+        }
     }
 
-    private void initializeWebViewHandlers() {
+    private void initializeWebViewHandlers()
+    {
+       try {
+
+
         // General WebView error handler
+
         webView.getEngine().setOnError(event -> {
             String errorType = event.getException() != null ?
                     " (" + event.getException().getClass().getSimpleName() + ")" : "";
@@ -58,9 +73,20 @@ public class WebViews extends View {
         webView.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
                 JSObject window = (JSObject) webView.getEngine().executeScript("window");
-                window.setMember("jsBridge", new JSBridge());
+                try {
+                    JSBridge jsBridge = new JSBridge();
+                    window.setMember("jsBridge", jsBridge);
+                } catch (JSException e)
+                {
+                    showAlert("oh jspBrider",e.getMessage());
+                }
+
             }
         });
+       } catch (Exception e)
+       {
+           showAlert("got you babe ",e.getMessage());
+       }
     }
 
     private List<Landmark> createLandmarks() {
@@ -182,8 +208,10 @@ public class WebViews extends View {
     }
 
     // JavaScript-Java bridge class
-    public class JSBridge {
-        public void showAlert(String title, String message) {
+    public class JSBridge
+    {
+        public void showAlert(String title, String message)
+        {
             WebViews.this.showAlert(title, message);
         }
 
