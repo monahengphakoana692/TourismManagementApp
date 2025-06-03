@@ -32,11 +32,8 @@ public class GluonApplication extends Application {
         appManager.addViewFactory(QUIZ_VIEW, QuizView::new);
         appManager.addViewFactory(FullVideo, () -> {
             FullVideoView view = new FullVideoView();
-            // Default settings if needed
             return view;
         });
-        //appManager.addViewFactory(SETTINGS_VIEW, SettingsView::new);
-
         DrawerManager.buildDrawer(appManager);
     }
 
@@ -51,7 +48,7 @@ public class GluonApplication extends Application {
     {
         Swatch.LIME.assignTo(scene); // Changed to blue for a travel app feel
         scene.getStylesheets().add(GluonApplication.class.getResource("style.css").toExternalForm());
-        ((Stage) scene.getWindow()).getIcons().add(new Image(GluonApplication.class.getResourceAsStream("/lesotho.png")));
+        ((Stage) scene.getWindow()).getIcons().add(new Image(GluonApplication.class.getResourceAsStream("src/main/resources/lesotho.png")));
     }
 
     public static void main(String[] args) {

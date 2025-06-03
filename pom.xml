@@ -6,67 +6,48 @@
     <artifactId>fornow</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>forNow</name>
+    <name>TourGuideApp</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release> <!-- Changed to 17 -->
-        <javafx.version>17.0.15</javafx.version> <!-- Downgraded to match Java 17 -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <javafx.version>17.0.15</javafx.version>
         <attach.version>4.0.22</attach.version>
-        <gluonfx.plugin.version>1.0.26</gluonfx.plugin.version>
-        <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <mainClassName>com.gluonapplication.GluonApplication</mainClassName>
-
-        <!-- Android Configuration - simplified for gluonfx-maven-plugin 1.0.26 -->
-        <android.sdk>C:\Android\Sdk</android.sdk>
-        <android.targetSdk>34</android.targetSdk>
-        <android.compileSdk>34</android.compileSdk>
+        <shade.plugin.version>3.5.0</shade.plugin.version>
+        <compiler.plugin.version>3.8.1</compiler.plugin.version>
+        <javafx.plugin.version>0.0.8</javafx.plugin.version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.gluonhq.attach</groupId>
-                <artifactId>storage</artifactId>
-                <version>4.0.22</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
-        <!-- JavaFX -->
+        <!-- JavaFX Dependencies (without classifiers) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.15</version>
-            <classifier>win</classifier> <!-- Windows -->
-            <scope>compile</scope> <!-- Force Maven to use this exact version -->
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.15</version>
-            <classifier>win</classifier> <!-- Windows -->
-            <scope>compile</scope> <!-- Force Maven to use this exact version -->
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
-            <version>17.0.15</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>17.0.15</version>
-            <classifier>win</classifier> <!-- Windows -->
-            <scope>compile</scope> <!-- Force Maven to use this exact version -->
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Gluon -->
-        <dependency>
-            <groupId>com.esri.arcgisruntime</groupId>
-            <artifactId>arcgis-java</artifactId>
-            <version>100.15.0</version> <!-- Check for latest version -->
-        </dependency>
+        <!-- Gluon Dependencies -->
         <dependency>
             <groupId>com.gluonhq</groupId>
             <artifactId>charm-glisten</artifactId>
@@ -74,12 +55,13 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId> <!-- Exclude all transitive JavaFX deps -->
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
-        <!-- Attach -->
+
+        <!-- Gluon Attach (Desktop) -->
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
             <artifactId>display</artifactId>
@@ -94,15 +76,12 @@
         </dependency>
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
-            <artifactId>statusbar</artifactId>
-            <version>${attach.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gluonhq.attach</groupId>
             <artifactId>storage</artifactId>
             <version>${attach.version}</version>
             <classifier>desktop</classifier>
         </dependency>
+
+        <!-- Other Gluon/Utility Dependencies -->
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
             <artifactId>util</artifactId>
@@ -118,14 +97,75 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-        <!-- Android Runtime
-        <dependency>
-            <groupId>com.gluonhq</groupId>
-            <artifactId>charm-down-plugin-android</artifactId>
-            <version>${attach.version}</version>
-            <scope>runtime</scope>
-        </dependency> -->
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compiler Plugin with JavaFX exports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version>
+                <configuration>
+                    <release>17</release>
+                    <compilerArgs>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.glass.utils=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.graphics/com.sun.javafx.text=ALL-UNNAMED</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <!-- JavaFX Plugin (optional) -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>${javafx.plugin.version}</version>
+                <configuration>
+                    <mainClass>${mainClassName}</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- Shade Plugin for Fat JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${shade.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${mainClassName}</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
             <id>Gluon</id>
@@ -141,62 +181,4 @@
             <url>https://esri.jfrog.io/artifactory/arcgis</url>
         </repository>
     </repositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <release>17</release> <!-- Explicitly set to 17 -->
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>${javafx.plugin.version}</version>
-                <configuration>
-                    <mainClass>${mainClassName}</mainClass>
-                </configuration>
-            </plugin>
-
-
-            <plugin>
-                <groupId>com.gluonhq</groupId>
-                <artifactId>gluonfx-maven-plugin</artifactId>
-                <version>${gluonfx.plugin.version}</version>
-                <configuration>
-                    <target>${gluonfx.target}</target>
-                    <attachList>
-                        <list>display</list>
-                        <list>lifecycle</list>
-                        <list>statusbar</list>
-                        <list>storage</list>
-                    </attachList>
-                    <mainClass>${mainClassName}</mainClass>
-                    <bundlesList>
-                        <list>com.gluonapplication</list>
-                    </bundlesList>
-                    <reflectionList>
-                        <list>com.gluonapplication.views.HomeView</list>
-                        <list>com.gluonapplication.views.SecondaryView</list>
-                    </reflectionList>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>android</id>
-            <properties>
-                <gluonfx.target>android</gluonfx.target>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
 </project>

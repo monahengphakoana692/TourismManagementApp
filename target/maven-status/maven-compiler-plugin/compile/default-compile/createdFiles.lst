@@ -1,4 +1,3 @@
-com\gluonapplication\views\HomeView$1.class
 com\gluonapplication\MultiMediaView.class
 com\gluonapplication\views\SettingsView.class
 com\gluonapplication\DrawerManager.class
@@ -10,9 +9,10 @@ com\gluonapplication\GluonApplication.class
 com\gluonapplication\views\SecondaryView.class
 com\gluonapplication\views\FullVideoView.class
 com\gluonapplication\views\MapViews$1.class
-com\gluonapplication\views\HomeView$2.class
 com\gluonapplication\views\ToursView.class
 com\gluonapplication\views\MapViews.class
 com\gluonapplication\views\WebViewTry.class
 com\gluonapplication\views\WebViews.class
+com\gluonapplication\views\WebViews$JSBridge.class
 com\gluonapplication\views\QuizView.class
+com\gluonapplication\views\WebViews$Landmark.class

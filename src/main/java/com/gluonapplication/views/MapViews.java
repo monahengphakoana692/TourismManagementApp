@@ -1,9 +1,5 @@
 package com.gluonapplication.views;
 
-
-import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.SpatialReferences;
-import com.esri.arcgisruntime.location.LocationDataSource.Location;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.control.Dialog;
 import com.gluonhq.charm.glisten.mvc.View;
@@ -58,23 +54,23 @@ public class MapViews extends View {
         hotspots.add(new Hotspot("1", "Avani Maseru",
                 "The most exciting hotel in lesotho",
                 new MapPoint(100, 100),
-                "/Avani.jpeg",
-                "/Avanini.mp3",
+                "src/main/resources/Avani.jpeg",
+                "src/main/resources/Avanini.mp3",
                 null));
 
         hotspots.add(new Hotspot("2", "Maletsunyane Falls",
                 "Highest single-drop waterfall in Southern Africa",
                 new MapPoint(-29.986, 28.987),
-                "/MaleFalls.jpeg",
-                "/Falls.mp3",
-                "/FallVideo.mp4"));
+                "src/main/resources/maleFalls.jpeg",
+                "src/main/resources/Falls.mp3",
+                "src/main/resources/FallVideo.mp4"));
 
         hotspots.add(new Hotspot("3", "Katse Dam",
                 "Water facility in lesotho",
                 new MapPoint(-29.986, 28.987),
-                "/katse.png",
-                "/Falls.mp3",
-                "/katse.mp4"));
+                "src/main/resources/katse.png",
+                "src/main/resources/Falls.mp3",
+                "src/main/resources/katse.mp4"));
     }
 
     private void createHotspotLayer() {
@@ -114,34 +110,6 @@ public class MapViews extends View {
             }
         };
         mapView.addLayer(layer);
-    }
-
-
-
-    private Location getCurrentLocation() {
-        try {
-            // 1. Get coordinates from IP-API
-            String json = new Scanner(
-                    new URL("http://ip-api.com/json").openStream(), "UTF-8")
-                    .useDelimiter("\\A").next();
-
-            JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
-            double lat = obj.get("lat").getAsDouble();
-            double lon = obj.get("lon").getAsDouble();
-
-            // 2. Create ArcGIS Point (WGS84 coordinate system)
-            Point point = new Point(lon, lat, SpatialReferences.getWgs84());
-
-            // 3. Create ArcGIS Location (simplest constructor)
-            return new Location(point, Double.NaN, Double.NaN, Double.NaN, false);
-
-        } catch (Exception e) {
-            System.err.println("Failed to get location: " + e.getMessage());
-
-            // Return default location (New York) if failed
-            Point defaultPoint = new Point(-29.9028, 28.0944, SpatialReferences.getWgs84());
-            return new Location(defaultPoint, Double.NaN, Double.NaN, Double.NaN, false);
-        }
     }
 
     private Node createMarker(Hotspot hotspot) {
